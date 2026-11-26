@@ -1,1052 +1,661 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaxGuard AI | Enterprise</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-:root{
- --bg:#f4f7fb;--surface:#fff;--side:#101d30;
- --text:#17243a;--muted:#8492a6;--border:#e6ebf2;
- --accent:#13a982;--soft:#e8f7f1;--blue:#4388db;
- --shadow:0 4px 18px rgba(20,40,70,.05);
-}
-body.dark{
- --bg:#0c1422;--surface:#142238;--side:#0a1220;
- --text:#edf4ff;--muted:#a0b0c5;--border:#293a52;
- --accent:#37d4a3;--soft:#173c36;--blue:#70aaff;
- --shadow:none;
-}
-*{box-sizing:border-box}
-body{
- margin:0;background:var(--bg);color:var(--text);
- font-family:Inter,Arial,sans-serif;transition:.2s;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-[hidden]{display:none!important}
-
-/* WELCOME */
-.welcome{
- position:fixed;inset:0;z-index:9999;
- display:flex;align-items:center;justify-content:center;
- padding:22px;color:white;text-align:center;
- background:
- radial-gradient(circle at 80% 15%,rgba(19,169,130,.22),transparent 35%),
- linear-gradient(135deg,#091525,#18364a);
-}
-.welcome-inner{max-width:650px;width:100%;padding:35px 15px}
-.welcome-logo{
- width:76px;height:76px;margin:0 auto 24px;
- background:#13a982;border-radius:22px;
- display:grid;place-items:center;
- box-shadow:0 12px 40px #13a98244;
-}
-.welcome-logo svg{width:40px;height:40px}
-.welcome h1{font-size:clamp(35px,8vw,58px);margin:0 0 15px}
-.welcome h1 span{color:#37d4a3}
-.welcome p{
- color:#b5c4d6;line-height:1.9;
- max-width:480px;margin:0 auto 28px;font-size:14px
-}
-.welcome-foot{margin-top:35px;color:#8295aa;font-size:10px;letter-spacing:1.5px}
-.welcome-language{max-width:180px;margin:0 auto 22px}
-.welcome-language select{
- background:#172c42;color:white;border:1px solid #3b526b;
-}
-.enter-btn{
- background:#13a982;color:white;border:0;border-radius:10px;
- padding:15px 28px;font-weight:bold;display:inline-flex;
- gap:10px;align-items:center;justify-content:center;
-}
-.enter-btn:hover{background:#0d8e6d}
-.enter-btn svg{width:18px}
-
-/* APPLICATION */
-.app{display:flex;min-height:100vh}
-.sidebar{
- width:245px;background:var(--side);color:#fff;
- position:fixed;top:0;bottom:0;left:0;
- display:flex;flex-direction:column;z-index:20;
- overflow-y:auto;
-}
-.logo{
- height:83px;display:flex;align-items:center;gap:12px;
- padding:20px;border-bottom:1px solid #26354a;flex-shrink:0;
-}
-.logo-icon{
- background:#13a982;color:white;width:39px;height:39px;
- border-radius:11px;display:grid;place-items:center
-}
-.logo strong{font-size:18px}
-.logo small{display:block;color:#9aabc0;font-size:10px;margin-top:4px}
-.nav-title{
- padding:20px 20px 8px;color:#74869d;
- font-size:10px;letter-spacing:1px
-}
-.nav{
- display:flex;align-items:center;gap:12px;
- padding:12px 17px;margin:2px 12px;
- color:#aab9cd;text-decoration:none;border-radius:8px;
- cursor:pointer;font-size:13px;border:0;background:none;text-align:left;
- width:calc(100% - 24px);
-}
-.nav svg{width:18px;height:18px;flex-shrink:0}
-.nav:hover,.nav.active{background:#1c3544;color:#42d8ab}
-.side-bottom{margin-top:auto;padding:15px;border-top:1px solid #26354a}
-.user{display:flex;align-items:center;gap:10px;font-size:12px}
-.avatar{
- width:35px;height:35px;border-radius:50%;background:#244b51;
- color:#51e2b6;display:grid;place-items:center
-}
-.main{margin-left:245px;width:calc(100% - 245px);min-width:0}
-.topbar{
- height:72px;background:var(--surface);
- border-bottom:1px solid var(--border);
- display:flex;align-items:center;justify-content:space-between;
- padding:0 28px;position:sticky;top:0;z-index:10;
-}
-.top-left{display:flex;align-items:center;gap:12px}
-.topbar h3{font-size:15px;margin:0}
-.actions{display:flex;align-items:center;gap:9px}
-.icon-btn{
- width:37px;height:37px;border:1px solid var(--border);
- border-radius:9px;background:var(--surface);color:var(--text);
- display:grid;place-items:center
-}
-.icon-btn svg{width:17px}
-select,input,textarea{
- background:var(--surface);color:var(--text);
- border:1px solid var(--border);border-radius:8px;
- padding:11px;width:100%;outline:none
-}
-select:focus,input:focus,textarea:focus{border-color:var(--accent)}
-.actions select{width:auto;padding:8px}
-.content{padding:28px;max-width:1450px;margin:auto}
-.page{display:none}
-.page.active{display:block}
-.heading{
- display:flex;justify-content:space-between;align-items:center;
- gap:12px;flex-wrap:wrap;margin-bottom:23px
-}
-.heading h1{font-size:22px;margin:0 0 6px}
-.heading p{font-size:12px;color:var(--muted);margin:0}
-.btn{
- border:0;border-radius:8px;padding:11px 15px;
- background:var(--accent);color:white;font-size:12px;font-weight:600;
- display:inline-flex;align-items:center;gap:8px
-}
-.btn svg{width:16px;height:16px}
-.btn.secondary{
- background:var(--surface);color:var(--text);
- border:1px solid var(--border)
-}
-.btn.red{background:#d94e60}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
-.card,.panel{
- background:var(--surface);border:1px solid var(--border);
- border-radius:12px;box-shadow:var(--shadow)
-}
-.card{padding:19px}
-.card-top{display:flex;justify-content:space-between;align-items:center}
-.card-icon{
- width:37px;height:37px;border-radius:10px;
- display:grid;place-items:center;background:var(--soft);color:var(--accent)
-}
-.card-icon svg{width:19px}
-.card small{font-size:11px;color:var(--muted)}
-.value{font-size:25px;font-weight:700;margin:16px 0 5px;overflow-wrap:anywhere}
-.sub{font-size:10px;color:var(--muted)}
-.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:17px}
-.panel{padding:20px;margin-bottom:17px;min-width:0}
-.panel h3{font-size:14px;margin:0 0 18px}
-.panel-head{
- display:flex;align-items:center;justify-content:space-between;
- gap:10px;margin-bottom:15px;flex-wrap:wrap
-}
-.panel-head h3{margin:0}
-.table-wrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{
- text-align:left;padding:13px 10px;
- border-bottom:1px solid var(--border);white-space:nowrap
-}
-th{color:var(--muted);font-weight:500}
-.status{
- padding:5px 9px;border-radius:20px;
- font-size:10px;background:var(--soft);color:var(--accent)
-}
-.status.warn{background:#fff3d8;color:#a36c15}
-body.dark .status.warn{background:#493b21;color:#ffce79}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.muted{color:var(--muted);font-size:12px;line-height:1.8}
-.result{
- background:var(--bg);border:1px solid var(--border);
- padding:15px;border-radius:9px;margin-top:12px;
- font-size:13px;line-height:1.9;overflow-wrap:anywhere
-}
-.metric-bar{height:7px;background:var(--border);border-radius:9px;margin:12px 0}
-.metric-fill{height:100%;background:var(--accent);border-radius:9px}
-.chat{height:420px;display:flex;flex-direction:column}
-.messages{flex:1;overflow:auto;padding:10px 0}
-.message{
- max-width:85%;padding:12px 14px;border-radius:12px;
- font-size:13px;line-height:1.7;margin:9px 0;overflow-wrap:anywhere
-}
-.bot{background:var(--bg);border:1px solid var(--border)}
-.me{background:var(--soft);margin-left:auto}
-.chat-form{display:flex;gap:8px;border-top:1px solid var(--border);padding-top:12px}
-.chat-form input{flex:1;min-width:0}
-.chat-form button{width:45px;justify-content:center;padding:8px}
-.quick{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
-.quick button{
- font-size:10px;background:var(--bg);color:var(--text);
- border:1px solid var(--border);padding:8px;border-radius:7px
-}
-.empty{text-align:center;color:var(--muted);padding:30px;font-size:12px}
-.bottom-mobile{display:none}
-
-/* RTL */
-html[dir="rtl"] body{font-family:Arial,Tahoma,sans-serif}
-html[dir="rtl"] .sidebar{left:auto;right:0}
-html[dir="rtl"] .main{margin-left:0;margin-right:245px}
-html[dir="rtl"] .nav{text-align:right}
-html[dir="rtl"] th,html[dir="rtl"] td{text-align:right}
-html[dir="rtl"] .me{margin-left:0;margin-right:auto}
-html[dir="rtl"] .top-left{flex-direction:row}
-html[dir="rtl"] .bottom-mobile .nav{text-align:center}
-
-@media(max-width:950px){
- .stats{grid-template-columns:repeat(2,1fr)}
- .layout{grid-template-columns:1fr}
-}
-@media(max-width:680px){
- .sidebar{display:none}
- .main{margin:0!important;width:100%}
- .topbar{padding:0 13px}
- .content{padding:15px}
- .topbar h3{font-size:12px}
- .actions{gap:5px}
- .actions select{max-width:105px;font-size:10px}
- .bottom-mobile{
-  display:flex;position:fixed;bottom:0;left:0;right:0;
-  background:var(--surface);border-top:1px solid var(--border);
-  z-index:30;overflow-x:auto;padding:7px 2px;
- }
- .bottom-mobile .nav{
-  flex:0 0 20%;min-width:65px;margin:0;
-  padding:7px 2px;display:flex;flex-direction:column;
-  align-items:center;gap:4px;font-size:9px;
-  width:auto;
- }
- .bottom-mobile .nav svg{width:19px}
- .bottom-mobile .nav.active{background:var(--soft)}
- body{padding-bottom:65px}
- .form-grid{grid-template-columns:1fr}
-}
-@media print{
- .sidebar,.topbar,.bottom-mobile,.btn{display:none!important}
- .main{margin:0!important;width:100%}
- .content{padding:0}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaxGuard AI — Tax Compliance Monitoring</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Cairo', 'Inter', sans-serif;
+    }
+    @keyframes pulseShield {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.55)); }
+      50% { transform: scale(1.07); filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.75)); }
+    }
+    @keyframes loadBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .shield-anim { animation: pulseShield 1.8s infinite ease-in-out; }
+    .progress-anim { animation: loadBar 2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  </style>
 </head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-<body>
-
-<!-- WELCOME SCREEN -->
-<div class="welcome" id="welcomeScreen">
- <div class="welcome-inner">
-  <div class="welcome-logo"><i data-lucide="shield-check"></i></div>
-  <h1>TaxGuard <span>AI</span></h1>
-  <p data-i18n="welcomeDesc">
-   Intelligent Tax Compliance Monitoring Platform.
-   Manage transactions, calculate taxes and monitor your financial records.
-  </p>
-  <div class="welcome-language">
-   <select id="welcomeLanguage" onchange="setLanguage(this.value)">
-    <option value="en">English</option>
-    <option value="ar">العربية</option>
-    <option value="fr">Français</option>
-   </select>
-  </div>
-  <button class="enter-btn" onclick="enterDashboard()">
-   <span data-i18n="enter">Enter Dashboard</span>
-   <i data-lucide="arrow-right"></i>
-  </button>
-  <div class="welcome-foot">ENTERPRISE PLATFORM · TAX MONITORING</div>
- </div>
-</div>
-
-<div class="app">
-
-<aside class="sidebar">
- <div class="logo">
-  <div class="logo-icon"><i data-lucide="shield-check"></i></div>
-  <div><strong>TaxGuard AI</strong><small>ENTERPRISE PLATFORM</small></div>
- </div>
-
- <div class="nav-title" data-i18n="mainMenu">MAIN MENU</div>
- <button class="nav active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span data-i18n="dashboard">Dashboard</span></button>
- <button class="nav" data-page="transactions"><i data-lucide="receipt"></i><span data-i18n="transactions">Transactions</span></button>
- <button class="nav" data-page="invoices"><i data-lucide="file-text"></i><span data-i18n="invoices">Invoices</span></button>
- <button class="nav" data-page="calculator"><i data-lucide="calculator"></i><span data-i18n="calculator">Tax calculator</span></button>
-
- <div class="nav-title" data-i18n="intelligence">INTELLIGENCE</div>
- <button class="nav" data-page="analysis"><i data-lucide="chart-no-axes-combined"></i><span data-i18n="analysis">Analysis</span></button>
- <button class="nav" data-page="assistant"><i data-lucide="bot"></i><span data-i18n="assistant">AI Assistant</span></button>
- <button class="nav" data-page="explanation"><i data-lucide="book-open"></i><span data-i18n="explanation">Interpretation</span></button>
- <button class="nav" data-page="solutions"><i data-lucide="lightbulb"></i><span data-i18n="solutions">Recommendations</span></button>
-
- <div class="nav-title" data-i18n="management">MANAGEMENT</div>
- <button class="nav" data-page="reports"><i data-lucide="file-bar-chart"></i><span data-i18n="reports">Reports</span></button>
- <button class="nav" data-page="settings"><i data-lucide="settings"></i><span data-i18n="settings">Settings</span></button>
-
- <div class="side-bottom">
-  <div class="user">
-   <div class="avatar"><i data-lucide="user-round"></i></div>
-   <div><span data-i18n="administrator">Administrator</span><small style="display:block;color:#9aabc0" data-i18n="localWorkspace">Local workspace</small></div>
-  </div>
- </div>
-</aside>
-
-<div class="main">
- <div class="topbar">
-  <div class="top-left">
-   <i data-lucide="shield-check" style="color:var(--accent)"></i>
-   <h3>TaxGuard AI</h3>
-  </div>
-  <div class="actions">
-   <select id="language" onchange="setLanguage(this.value)">
-    <option value="en">English</option>
-    <option value="ar">العربية</option>
-    <option value="fr">Français</option>
-   </select>
-   <button class="icon-btn" onclick="toggleTheme()" title="Theme">
-    <i data-lucide="moon" id="themeIcon"></i>
-   </button>
-  </div>
- </div>
-
- <div class="content">
-
- <!-- DASHBOARD -->
- <section class="page active" id="dashboard">
-  <div class="heading">
-   <div>
-    <h1 data-i18n="welcome">Welcome back</h1>
-    <p data-i18n="overview">Here is your tax compliance overview.</p>
-   </div>
-   <button class="btn" onclick="go('transactions')"><i data-lucide="plus"></i><span data-i18n="add">Add transaction</span></button>
-  </div>
-
-  <div class="stats">
-   <div class="card">
-    <div class="card-top"><small data-i18n="total">Total transactions</small><div class="card-icon"><i data-lucide="receipt"></i></div></div>
-    <div class="value" id="count">0</div><div class="sub" data-i18n="recorded">Recorded entries</div>
-   </div>
-   <div class="card">
-    <div class="card-top"><small data-i18n="revenue">Total revenue</small><div class="card-icon"><i data-lucide="wallet"></i></div></div>
-    <div class="value" id="revenue">0</div><div class="sub" data-i18n="amounts">Transaction amounts</div>
-   </div>
-   <div class="card">
-    <div class="card-top"><small data-i18n="tax">Calculated tax</small><div class="card-icon"><i data-lucide="landmark"></i></div></div>
-    <div class="value" id="tax">0</div><div class="sub" data-i18n="estimated">Estimated tax amount</div>
-   </div>
-   <div class="card">
-    <div class="card-top"><small data-i18n="review">Needs review</small><div class="card-icon"><i data-lucide="alert-circle"></i></div></div>
-    <div class="value" id="risks">0</div><div class="sub" data-i18n="missingRefs">Missing invoice references</div>
-   </div>
-  </div>
-
-  <div class="layout">
-   <div class="panel">
-    <div class="panel-head">
-     <h3 data-i18n="recent">Recent transactions</h3>
-     <button class="btn secondary" onclick="go('transactions')" data-i18n="viewAll">View all</button>
+  <!-- Animated Splash Screen -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white transition-opacity duration-500">
+    <div class="shield-anim mb-5 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-cyan-500 shadow-2xl">
+      <svg class="h-14 w-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+      </svg>
     </div>
-    <div class="table-wrap">
-     <table><thead><tr>
-      <th data-i18n="name">Name</th><th data-i18n="amount">Amount</th>
-      <th data-i18n="tax">Tax</th><th data-i18n="status">Status</th>
-     </tr></thead><tbody id="recent"></tbody></table>
+    <h1 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-cyan-300 bg-clip-text text-transparent">TaxGuard AI</h1>
+    <p class="mt-2 text-xs text-slate-400">Tax Compliance Monitoring</p>
+    <div class="mt-7 h-1.5 w-52 overflow-hidden rounded-full bg-slate-800">
+      <div class="progress-anim h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400"></div>
     </div>
-   </div>
-   <div class="panel">
-    <h3 data-i18n="compliance">Compliance overview</h3>
-    <div class="value" id="score">—</div>
-    <p class="muted" data-i18n="scoreNote">Record completeness indicator, not a legal compliance certification.</p>
-    <div class="metric-bar"><div class="metric-fill" id="progress" style="width:0%"></div></div>
-    <button class="btn secondary" onclick="go('analysis')" data-i18n="runAnalysis">Run analysis</button>
-   </div>
   </div>
- </section>
 
- <!-- TRANSACTIONS -->
- <section class="page" id="transactions">
-  <div class="heading">
-   <div><h1 data-i18n="transactions">Transactions</h1><p data-i18n="manageRecords">Manage and review financial records.</p></div>
+  <!-- Main App -->
+  <div id="app-root" class="hidden min-h-screen flex flex-col pb-20 md:pb-8">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
+        <button onclick="navigateTo('dashboard')" class="flex items-center gap-3 text-start">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-base font-extrabold text-slate-900 dark:text-white">TaxGuard AI</span>
+            <p id="header-page-title" class="text-xs text-slate-500 dark:text-slate-400">لوحة القيادة</p>
+          </div>
+        </button>
+
+        <!-- Three-Dot Menu Button (⋮) -->
+        <div class="relative">
+          <button id="menu-btn" onclick="toggleMenu(event)" aria-label="Menu" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="5" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="12" cy="19" r="2" />
+            </svg>
+          </button>
+
+          <!-- Dropdown / Drawer Menu -->
+          <div id="more-menu" class="invisible opacity-0 scale-95 pointer-events-none fixed md:absolute inset-x-4 md:inset-x-auto top-16 md:top-12 end-auto md:end-0 z-50 w-auto md:w-72 max-h-[80vh] overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-2xl transition-all duration-200 origin-top-end">
+            <div id="menu-items-container" class="space-y-1"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 space-y-6"></main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 inset-x-0 z-30 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+      <div id="bottom-nav" class="mx-auto flex max-w-6xl items-center justify-around px-2 py-2"></div>
+    </nav>
   </div>
-  <div class="panel">
-   <h3 data-i18n="newTransaction">New transaction</h3>
-   <div class="form-grid">
-    <div class="field"><label data-i18n="transactionName">Transaction name</label><input id="name" placeholder="Sales invoice"></div>
-    <div class="field"><label data-i18n="invoiceRef">Invoice reference</label><input id="invoice" placeholder="INV-001"></div>
-    <div class="field"><label data-i18n="netAmount">Amount before tax</label><input id="amount" type="number" min="0"></div>
-    <div class="field"><label data-i18n="taxRate">Tax rate (%)</label><input id="rate" type="number" min="0" max="100" value="19"></div>
-    <div class="field"><label data-i18n="type">Transaction type</label>
-     <select id="type">
-      <option value="Sale" data-i18n="sale">Sale</option>
-      <option value="Purchase" data-i18n="purchase">Purchase</option>
-      <option value="Service" data-i18n="service">Service</option>
-     </select>
-    </div>
-   </div>
-   <button class="btn" onclick="add()"><i data-lucide="plus"></i><span data-i18n="saveTransaction">Save transaction</span></button>
-  </div>
-  <div class="panel">
-   <div class="panel-head"><h3 data-i18n="register">Transaction register</h3><button class="btn secondary" onclick="exportCSV()" data-i18n="exportCSV">Export CSV</button></div>
-   <div class="table-wrap"><table><thead><tr>
-    <th data-i18n="name">Name</th><th data-i18n="invoice">Invoice</th>
-    <th data-i18n="amount">Amount</th><th data-i18n="rate">Rate</th>
-    <th data-i18n="tax">Tax</th><th data-i18n="action">Action</th>
-   </tr></thead><tbody id="allRows"></tbody></table></div>
-  </div>
- </section>
 
- <!-- INVOICES -->
- <section class="page" id="invoices">
-  <div class="heading"><div><h1 data-i18n="invoices">Invoices</h1><p data-i18n="invoiceDesc">Invoice register and document references.</p></div></div>
-  <div class="panel">
-   <div class="table-wrap"><table><thead><tr>
-    <th data-i18n="reference">Reference</th><th data-i18n="transaction">Transaction</th>
-    <th data-i18n="amount">Amount</th><th data-i18n="date">Date</th>
-   </tr></thead><tbody id="invoiceRows"></tbody></table></div>
-  </div>
-  <div class="panel"><h3 data-i18n="documentManagement">Document management</h3>
-   <p class="muted" data-i18n="documentNote">This version stores invoice references only. Automatic document extraction requires a secure document-processing service.</p>
-  </div>
- </section>
+  <script>
+    const state = {
+      lang: 'ar',
+      currency: 'DZD',
+      dark: false,
+      page: 'dashboard',
+      menuOpen: false,
+      previewCalc: null,
+      transactions: [
+        {
+          id: 1,
+          name: 'شراء معدات مكتبية',
+          invoice: 'INV-2026-001',
+          beforeTax: 10000,
+          rate: 19,
+          type: 'operational',
+          taxAmount: 1900,
+          totalAmount: 11900
+        },
+        {
+          id: 2,
+          name: 'فاتورة استشارات محاسبية',
+          invoice: 'INV-2026-002',
+          beforeTax: 25000,
+          rate: 19,
+          type: 'sales',
+          taxAmount: 4750,
+          totalAmount: 29750
+        }
+      ],
+      activities: [
+        'فحص المعاملات مقابل القواعد الضريبية',
+        'تحديث عرض لوحة القيادة',
+        'تهيئة العملة واللغة'
+      ]
+    };
 
- <!-- CALCULATOR -->
- <section class="page" id="calculator">
-  <div class="heading"><div><h1 data-i18n="calculator">Tax calculator</h1><p data-i18n="calcDesc">Calculate tax and gross totals.</p></div></div>
-  <div class="panel">
-   <div class="field"><label data-i18n="netAmount">Net amount</label><input id="ca" type="number" min="0" placeholder="10000"></div>
-   <div class="field"><label data-i18n="taxRate">Tax rate (%)</label><input id="cr" type="number" min="0" max="100" value="19"></div>
-   <button class="btn" onclick="calc()" data-i18n="calculate">Calculate</button>
-   <div class="result" id="calcResult" data-i18n="calcPlaceholder">Your calculation will appear here.</div>
-  </div>
- </section>
+    const rates = { DZD: 1, USD: 1 / 134.5, EUR: 0.92 / 134.5, SAR: 3.75 / 134.5 };
+    const symbols = { DZD: 'د.ج ', USD: '$', EUR: '€', SAR: 'ر.س ' };
 
- <!-- ANALYSIS -->
- <section class="page" id="analysis">
-  <div class="heading">
-   <div><h1 data-i18n="analysis">Tax analysis</h1><p data-i18n="analysisDesc">Automated rule-based checks.</p></div>
-   <button class="btn" onclick="analyze()" data-i18n="runAnalysis">Run analysis</button>
-  </div>
-  <div class="panel"><h3 data-i18n="analysisResults">Analysis results</h3><div id="analysisResult" class="result" data-i18n="noAnalysis">No analysis has been run.</div></div>
-  <div class="panel"><h3 data-i18n="conclusions">Conclusions</h3><div id="conclusions" class="result" data-i18n="waiting">Waiting for analysis.</div></div>
- </section>
+    const icons = {
+      dashboard: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
+      transactions: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>',
+      invoices: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+      calculator: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>',
+      assistant: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+      compliance: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      regulations: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
+      deadlines: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+      reports: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+      notifications: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>',
+      currency: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      history: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      language: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>',
+      theme: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>',
+      settings: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+      help: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      about: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+    };
 
- <!-- ASSISTANT -->
- <section class="page" id="assistant">
-  <div class="heading">
-   <div><h1 data-i18n="assistant">AI Assistant</h1><p data-i18n="assistantDesc">TaxGuard intelligent support workspace.</p></div>
-   <span class="status" data-i18n="available">Assistant available</span>
-  </div>
-  <div class="panel chat">
-   <div class="messages" id="messages">
-    <div class="message bot" data-i18n="botWelcome">Hello! I am your TaxGuard assistant. Ask me about tax calculations, transactions or invoices.</div>
-   </div>
-   <div class="quick">
-    <button onclick="quick('analyze')" data-i18n="quickAnalyze">Analyze transactions</button>
-    <button onclick="quick('total')" data-i18n="quickTotal">Total tax</button>
-    <button onclick="quick('review')" data-i18n="quickReview">Items to review</button>
-    <button onclick="quick('vat')" data-i18n="quickVAT">Explain VAT</button>
-   </div>
-   <div class="chat-form">
-    <input id="question" data-placeholder="askPlaceholder" placeholder="Ask TaxGuard..." onkeydown="if(event.key==='Enter')ask()">
-    <button class="btn" onclick="ask()"><i data-lucide="send"></i></button>
-   </div>
-  </div>
-  <p class="muted" data-i18n="assistantNote">The built-in assistant uses local rules and saved records. It does not connect to an external AI model.</p>
- </section>
+    const dict = {
+      ar: {
+        dir: 'rtl',
+        homeTitle: 'الصفحة الرئيسية',
+        homeSub: 'وصول مباشر إلى الخدمات الخمس الأساسية بدون تسجيل دخول.',
+        txName: 'اسم المعاملة',
+        invNum: 'رقم الفاتورة',
+        beforeTax: 'المبلغ قبل الضريبة',
+        taxRate: 'نسبة الضريبة (%)',
+        txType: 'نوع المعاملة',
+        calcBtn: 'Calculate',
+        saveBtn: 'Save Transaction',
+        resultsTableTitle: 'جدول النتائج بعد الحفظ',
+        taxVal: 'قيمة الضريبة',
+        totalVal: 'المجموع بعد الضريبة',
+        complianceStatus: 'الامتثال الضريبي',
+        types: {
+          operational: 'نفقات تشغيلية (Operational)',
+          sales: 'مبيعات خاضعة للضريبة (Sales)',
+          export: 'تصدير معفى (Export)',
+          personal: 'مصروف شخصي (Personal)'
+        },
+        main5: {
+          dashboard: 'لوحة القيادة',
+          transactions: 'المعاملات',
+          invoices: 'الفواتير',
+          calculator: 'حاسبة الضرائب',
+          assistant: 'المساعد الذكي'
+        },
+        extra12: {
+          compliance: 'فاحص الامتثال الضريبي',
+          regulations: 'اللوائح الضريبية',
+          deadlines: 'تقويم المواعيد الضريبية',
+          reports: 'التقارير والتحليلات',
+          notifications: 'الإشعارات',
+          currency: 'إدارة العملات',
+          history: 'سجل النشاطات',
+          language: 'اختيار اللغة',
+          theme: 'الوضع الليلي / النهاري',
+          settings: 'إعدادات التطبيق',
+          help: 'مركز المساعدة',
+          about: 'حول TaxGuard AI'
+        },
+        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+      },
+      en: {
+        dir: 'ltr',
+        homeTitle: 'Main Homepage',
+        homeSub: 'Direct access to the 5 core services with no login required.',
+        txName: 'Transaction Name',
+        invNum: 'Invoice Number',
+        beforeTax: 'Amount Before Tax',
+        taxRate: 'Tax Rate (%)',
+        txType: 'Transaction Type',
+        calcBtn: 'Calculate',
+        saveBtn: 'Save Transaction',
+        resultsTableTitle: 'Saved Transactions Results Table',
+        taxVal: 'Tax Amount',
+        totalVal: 'Total After Tax',
+        complianceStatus: 'Tax Compliance',
+        types: {
+          operational: 'Operational Expense',
+          sales: 'Taxable Sales',
+          export: 'Exempt Export',
+          personal: 'Personal Expense'
+        },
+        main5: {
+          dashboard: 'Dashboard',
+          transactions: 'Transactions',
+          invoices: 'Invoices',
+          calculator: 'Tax Calculator',
+          assistant: 'AI Smart Assistant'
+        },
+        extra12: {
+          compliance: 'Tax Compliance Checker',
+          regulations: 'Tax Regulations',
+          deadlines: 'Tax Deadlines Calendar',
+          reports: 'Reports and Analytics',
+          notifications: 'Notifications',
+          currency: 'Currency Management',
+          history: 'Activity History',
+          language: 'Language Selection',
+          theme: 'Dark Mode / Light Mode',
+          settings: 'Application Settings',
+          help: 'Help Center',
+          about: 'About TaxGuard AI'
+        },
+        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+      },
+      fr: {
+        dir: 'ltr',
+        homeTitle: 'Accueil Principale',
+        homeSub: 'Accès direct aux 5 services principaux sans authentification.',
+        txName: 'Nom de la transaction',
+        invNum: 'Numéro de facture',
+        beforeTax: 'Montant hors taxe',
+        taxRate: 'Taux de taxe (%)',
+        txType: 'Type de transaction',
+        calcBtn: 'Calculate',
+        saveBtn: 'Save Transaction',
+        resultsTableTitle: 'Tableau des résultats enregistrés',
+        taxVal: 'Montant de la taxe',
+        totalVal: 'Total TTC',
+        complianceStatus: 'Conformité fiscale',
+        types: {
+          operational: 'Charge opérationnelle',
+          sales: 'Ventes taxables',
+          export: 'Exportation exonérée',
+          personal: 'Dépense personnelle'
+        },
+        main5: {
+          dashboard: 'Tableau de bord',
+          transactions: 'Transactions',
+          invoices: 'Factures',
+          calculator: 'Calculateur fiscal',
+          assistant: 'Assistant IA intelligent'
+        },
+        extra12: {
+          compliance: 'Vérificateur conformité fiscale',
+          regulations: 'Réglementations fiscales',
+          deadlines: 'Calendrier des échéances',
+          reports: 'Rapports et analyses',
+          notifications: 'Notifications',
+          currency: 'Gestion des devises',
+          history: 'Historique des activités',
+          language: 'Choix de la langue',
+          theme: 'Mode sombre / clair',
+          settings: 'Paramètres application',
+          help: "Centre d'aide",
+          about: 'À propos de TaxGuard AI'
+        },
+        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+      }
+    };
 
- <!-- EXPLANATION -->
- <section class="page" id="explanation">
-  <div class="heading"><div><h1 data-i18n="explanation">Interpretation</h1><p data-i18n="explainDesc">Understand the analysis indicators.</p></div></div>
-  <div class="panel"><div id="explanationResult" class="result" data-i18n="runToExplain">Run an analysis to generate explanations.</div></div>
- </section>
+    const extraKeys = [
+      'compliance', 'regulations', 'deadlines', 'reports',
+      'notifications', 'currency', 'history', 'language',
+      'theme', 'settings', 'help', 'about'
+    ];
 
- <!-- SOLUTIONS -->
- <section class="page" id="solutions">
-  <div class="heading"><div><h1 data-i18n="solutions">Recommendations</h1><p data-i18n="solutionsDesc">Suggested actions based on detected data issues.</p></div></div>
-  <div class="panel"><div id="solutionsResult" class="result" data-i18n="noRecommendations">No recommendations yet.</div></div>
- </section>
+    function t() {
+      return dict[state.lang];
+    }
 
- <!-- REPORTS -->
- <section class="page" id="reports">
-  <div class="heading"><div><h1 data-i18n="reports">Reports</h1><p data-i18n="reportsDesc">Financial summaries and exports.</p></div></div>
-  <div class="stats">
-   <div class="card"><small data-i18n="total">Total transactions</small><div class="value" id="rc">0</div></div>
-   <div class="card"><small data-i18n="revenue">Net revenue</small><div class="value" id="rr">0</div></div>
-   <div class="card"><small data-i18n="tax">Tax amount</small><div class="value" id="rt">0</div></div>
-   <div class="card"><small data-i18n="gross">Gross total</small><div class="value" id="rg">0</div></div>
-  </div>
-  <div class="panel">
-   <button class="btn" onclick="exportCSV()" data-i18n="downloadReport">Download CSV report</button>
-   <button class="btn secondary" onclick="window.print()" data-i18n="printReport">Print report</button>
-  </div>
- </section>
+    function logActivity(text) {
+      state.activities.unshift(text);
+      if (state.activities.length > 20) state.activities.pop();
+    }
 
- <!-- SETTINGS -->
- <section class="page" id="settings">
-  <div class="heading"><div><h1 data-i18n="settings">Settings</h1><p data-i18n="settingsDesc">Customize your workspace.</p></div></div>
-  <div class="panel">
-   <h3 data-i18n="regional">Regional preferences</h3>
-   <div class="field"><label data-i18n="currency">Display currency</label>
-    <select id="currency" onchange="saveSettings()">
-     <option value="DZD">DZD - Algerian Dinar</option>
-     <option value="USD">USD - US Dollar</option>
-     <option value="EUR">EUR - Euro</option>
-     <option value="GBP">GBP - British Pound</option>
-     <option value="SAR">SAR - Saudi Riyal</option>
-     <option value="MAD">MAD - Moroccan Dirham</option>
-     <option value="TND">TND - Tunisian Dinar</option>
-     <option value="CAD">CAD - Canadian Dollar</option>
-     <option value="CHF">CHF - Swiss Franc</option>
-    </select>
-   </div>
-   <div class="field"><label data-i18n="defaultRate">Default tax rate (%)</label><input id="defaultRate" type="number" min="0" max="100" value="19"></div>
-   <button class="btn" onclick="saveSettings()" data-i18n="savePreferences">Save preferences</button>
-  </div>
-  <div class="panel">
-   <h3 data-i18n="appearance">Appearance</h3>
-   <button class="btn secondary" onclick="toggleTheme()" data-i18n="switchTheme">Switch light / dark mode</button>
-  </div>
-  <div class="panel">
-   <h3 data-i18n="dataManagement">Data management</h3>
-   <p class="muted" data-i18n="localDataNote">Your data is stored in this browser on this device.</p>
-   <button class="btn secondary" onclick="exportCSV()" data-i18n="exportRecords">Export records</button>
-   <button class="btn red" onclick="clearData()" data-i18n="deleteRecords">Delete all records</button>
-  </div>
-  <div class="panel"><h3 data-i18n="about">About TaxGuard AI</h3><p class="muted" data-i18n="aboutText">Enterprise Tax Compliance Monitoring Platform. Demo version.</p></div>
- </section>
+    function evaluateCompliance(type, rate) {
+      if (type === 'personal') return { ok: false, label: state.lang === 'ar' ? 'مخالف (شخصي)' : 'Non-Compliant' };
+      if (type === 'export' && rate > 0) return { ok: false, label: state.lang === 'ar' ? 'تنبيه (تصدير بضريبة)' : 'Review (Export > 0%)' };
+      if ((type === 'sales' || type === 'operational') && rate !== 19 && rate !== 9) {
+        return { ok: false, label: state.lang === 'ar' ? 'مراجعة (نسبة غير قياسية)' : 'Review (VAT Rate)' };
+      }
+      return { ok: true, label: state.lang === 'ar' ? 'متوافق' : 'Compliant' };
+    }
 
- </div>
-</div>
-</div>
+    function toggleMenu(e) {
+      if (e) e.stopPropagation();
+      state.menuOpen = !state.menuOpen;
+      renderMenuVisibility();
+    }
 
-<nav class="bottom-mobile">
- <button class="nav active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span data-i18n="home">Home</span></button>
- <button class="nav" data-page="transactions"><i data-lucide="receipt"></i><span data-i18n="records">Records</span></button>
- <button class="nav" data-page="analysis"><i data-lucide="chart-no-axes-combined"></i><span data-i18n="analysis">Analysis</span></button>
- <button class="nav" data-page="assistant"><i data-lucide="bot"></i><span data-i18n="assistant">Assistant</span></button>
- <button class="nav" data-page="settings"><i data-lucide="settings"></i><span data-i18n="settings">Settings</span></button>
-</nav>
+    function closeMenu() {
+      if (!state.menuOpen) return;
+      state.menuOpen = false;
+      renderMenuVisibility();
+    }
 
-<script>
-const $=id=>document.getElementById(id);
+    function renderMenuVisibility() {
+      const menu = document.getElementById('more-menu');
+      if (state.menuOpen) {
+        menu.classList.remove('invisible', 'opacity-0', 'scale-95', 'pointer-events-none');
+        menu.classList.add('visible', 'opacity-100', 'scale-100', 'pointer-events-auto');
+      } else {
+        menu.classList.add('invisible', 'opacity-0', 'scale-95', 'pointer-events-none');
+        menu.classList.remove('visible', 'opacity-100', 'scale-100', 'pointer-events-auto');
+      }
+    }
 
-const translations={
-en:{
- welcomeDesc:"Intelligent Tax Compliance Monitoring Platform. Manage transactions, calculate taxes and monitor your financial records.",
- enter:"Enter Dashboard",mainMenu:"MAIN MENU",intelligence:"INTELLIGENCE",management:"MANAGEMENT",
- dashboard:"Dashboard",transactions:"Transactions",invoices:"Invoices",calculator:"Tax calculator",
- analysis:"Analysis",assistant:"AI Assistant",explanation:"Interpretation",solutions:"Recommendations",
- reports:"Reports",settings:"Settings",administrator:"Administrator",localWorkspace:"Local workspace",
- welcome:"Welcome back",overview:"Here is your tax compliance overview.",add:"Add transaction",
- total:"Total transactions",revenue:"Total revenue",tax:"Calculated tax",review:"Needs review",
- recorded:"Recorded entries",amounts:"Transaction amounts",estimated:"Estimated tax amount",
- missingRefs:"Missing invoice references",recent:"Recent transactions",viewAll:"View all",
- name:"Name",amount:"Amount",status:"Status",compliance:"Compliance overview",
- scoreNote:"Record completeness indicator, not a legal compliance certification.",
- runAnalysis:"Run analysis",manageRecords:"Manage and review financial records.",
- newTransaction:"New transaction",transactionName:"Transaction name",invoiceRef:"Invoice reference",
- netAmount:"Amount before tax",taxRate:"Tax rate (%)",type:"Transaction type",
- sale:"Sale",purchase:"Purchase",service:"Service",saveTransaction:"Save transaction",
- register:"Transaction register",exportCSV:"Export CSV",invoice:"Invoice",rate:"Rate",
- action:"Action",invoiceDesc:"Invoice register and document references.",
- reference:"Reference",transaction:"Transaction",date:"Date",documentManagement:"Document management",
- documentNote:"This version stores invoice references only. Automatic document extraction requires a secure document-processing service.",
- calcDesc:"Calculate tax and gross totals.",calculate:"Calculate",
- calcPlaceholder:"Your calculation will appear here.",analysisDesc:"Automated rule-based checks.",
- analysisResults:"Analysis results",noAnalysis:"No analysis has been run.",conclusions:"Conclusions",
- waiting:"Waiting for analysis.",assistantDesc:"TaxGuard intelligent support workspace.",
- available:"Assistant available",botWelcome:"Hello! I am your TaxGuard assistant. Ask me about tax calculations, transactions or invoices.",
- quickAnalyze:"Analyze transactions",quickTotal:"Total tax",quickReview:"Items to review",quickVAT:"Explain VAT",
- askPlaceholder:"Ask TaxGuard...",assistantNote:"The built-in assistant uses local rules and saved records. It does not connect to an external AI model.",
- explainDesc:"Understand the analysis indicators.",runToExplain:"Run an analysis to generate explanations.",
- solutionsDesc:"Suggested actions based on detected data issues.",noRecommendations:"No recommendations yet.",
- reportsDesc:"Financial summaries and exports.",gross:"Gross total",downloadReport:"Download CSV report",
- printReport:"Print report",settingsDesc:"Customize your workspace.",regional:"Regional preferences",
- currency:"Display currency",defaultRate:"Default tax rate (%)",savePreferences:"Save preferences",
- appearance:"Appearance",switchTheme:"Switch light / dark mode",dataManagement:"Data management",
- localDataNote:"Your data is stored in this browser on this device.",exportRecords:"Export records",
- deleteRecords:"Delete all records",about:"About TaxGuard AI",aboutText:"Enterprise Tax Compliance Monitoring Platform. Demo version.",
- home:"Home",records:"Records",enterName:"Enter a transaction name and valid amount.",
- invalid:"Please enter valid transaction details.",deleteConfirm:"Delete this transaction?",
- noRecords:"No records yet",noInvoices:"No invoices",recordedStatus:"Recorded",needsReview:"Review",
- invalidValues:"Invalid values.",calcNet:"Net amount",calcTax:"Tax amount",calcGross:"Gross amount",
- addFirst:"Add transactions first.",analysisDone:"Analysis completed",transactionsCount:"Transactions",
- missingInvoice:"Missing invoice references",zeroRate:"Zero-rate transactions",
- dataWarning:"These are data-quality indicators, not proof of legal violations.",
- analysisConclusion:"records have missing invoice references.",zeroConclusion:"records use a zero tax rate.",
- legalWarning:"Legal compliance cannot be established from these figures alone.",
- explanationMissing:"A transaction without a reference is harder to trace to supporting documentation.",
- explanationZero:"The reason and legal basis should be checked.",
- explanationTax:"This is a mathematical calculation using the entered rate, not a verified statutory tax assessment.",
- tipMissing:"Add and verify invoice references for all incomplete records.",
- tipZero:"Check the legal basis and supporting evidence for zero-rated transactions.",
- tipCompare:"Compare transaction amounts with accounting records and original invoices.",
- tipRates:"Confirm tax rates against official rules applicable to the transaction and jurisdiction.",
- preferencesSaved:"Preferences saved.",clearConfirm:"Permanently clear all local records?",
- noQuestion:"Please enter a question.",totalAnswer:"Transactions",totalAmount:"Total amount",
- calculatedTax:"Calculated tax",missingAnswer:"records have no invoice reference. Check the supporting documents.",
- vatAnswer:"VAT is a value-added tax. Calculation: net amount × rate / 100. Verify the applicable statutory rate.",
- invoiceAnswer:"Open Invoices to review registered invoice references and missing references.",
- helpAnswer:"I can help with calculated tax, transactions, invoices and review indicators. Try asking a specific question.",
- delete:"Delete",missing:"Missing"
-},
-fr:{
- welcomeDesc:"Plateforme intelligente de suivi de la conformité fiscale. Gérez les transactions, calculez les taxes et suivez vos données financières.",
- enter:"Accéder au tableau de bord",mainMenu:"MENU PRINCIPAL",intelligence:"INTELLIGENCE",management:"GESTION",
- dashboard:"Tableau de bord",transactions:"Transactions",invoices:"Factures",calculator:"Calculateur fiscal",
- analysis:"Analyse",assistant:"Assistant IA",explanation:"Interprétation",solutions:"Recommandations",
- reports:"Rapports",settings:"Paramètres",administrator:"Administrateur",localWorkspace:"Espace de travail local",
- welcome:"Bienvenue",overview:"Voici votre aperçu de conformité fiscale.",add:"Ajouter une transaction",
- total:"Total des transactions",revenue:"Chiffre d'affaires",tax:"Taxe calculée",review:"À vérifier",
- recorded:"Enregistrements",amounts:"Montants des transactions",estimated:"Montant estimé de la taxe",
- missingRefs:"Références de facture manquantes",recent:"Transactions récentes",viewAll:"Voir tout",
- name:"Nom",amount:"Montant",status:"Statut",compliance:"Aperçu de conformité",
- scoreNote:"Indicateur de complétude des dossiers, pas une certification de conformité légale.",
- runAnalysis:"Lancer l'analyse",manageRecords:"Gérez et examinez les dossiers financiers.",
- newTransaction:"Nouvelle transaction",transactionName:"Nom de la transaction",invoiceRef:"Référence de facture",
- netAmount:"Montant hors taxe",taxRate:"Taux de taxe (%)",type:"Type de transaction",
- sale:"Vente",purchase:"Achat",service:"Service",saveTransaction:"Enregistrer la transaction",
- register:"Registre des transactions",exportCSV:"Exporter CSV",invoice:"Facture",rate:"Taux",
- action:"Action",invoiceDesc:"Registre des factures et références des documents.",
- reference:"Référence",transaction:"Transaction",date:"Date",documentManagement:"Gestion documentaire",
- documentNote:"Cette version stocke uniquement les références de facture. L'extraction automatique nécessite un service sécurisé.",
- calcDesc:"Calculer la taxe et le montant TTC.",calculate:"Calculer",
- calcPlaceholder:"Votre calcul apparaîtra ici.",analysisDesc:"Vérifications automatisées basées sur des règles.",
- analysisResults:"Résultats de l'analyse",noAnalysis:"Aucune analyse effectuée.",conclusions:"Conclusions",
- waiting:"En attente de l'analyse.",assistantDesc:"Espace d'assistance intelligent TaxGuard.",
- available:"Assistant disponible",botWelcome:"Bonjour ! Je suis votre assistant TaxGuard. Posez vos questions sur les taxes, transactions ou factures.",
- quickAnalyze:"Analyser les transactions",quickTotal:"Total des taxes",quickReview:"Éléments à vérifier",quickVAT:"Expliquer la TVA",
- askPlaceholder:"Demandez à TaxGuard...",assistantNote:"L'assistant intégré utilise des règles locales et les dossiers enregistrés. Il n'est pas connecté à un modèle IA externe.",
- explainDesc:"Comprendre les indicateurs d'analyse.",runToExplain:"Lancez une analyse pour générer des explications.",
- solutionsDesc:"Actions suggérées selon les problèmes détectés.",noRecommendations:"Aucune recommandation pour le moment.",
- reportsDesc:"Synthèses financières et exports.",gross:"Total TTC",downloadReport:"Télécharger le rapport CSV",
- printReport:"Imprimer le rapport",settingsDesc:"Personnalisez votre espace de travail.",regional:"Préférences régionales",
- currency:"Devise d'affichage",defaultRate:"Taux de taxe par défaut (%)",savePreferences:"Enregistrer les préférences",
- appearance:"Apparence",switchTheme:"Changer le mode clair / sombre",dataManagement:"Gestion des données",
- localDataNote:"Vos données sont stockées dans ce navigateur sur cet appareil.",exportRecords:"Exporter les dossiers",
- deleteRecords:"Supprimer tous les dossiers",about:"À propos de TaxGuard AI",aboutText:"Plateforme de suivi de conformité fiscale. Version démo.",
- home:"Accueil",records:"Dossiers",enterName:"Saisissez un nom et un montant valide.",
- invalid:"Veuillez saisir des données valides.",deleteConfirm:"Supprimer cette transaction ?",
- noRecords:"Aucun dossier",noInvoices:"Aucune facture",recordedStatus:"Enregistré",needsReview:"À vérifier",
- invalidValues:"Valeurs invalides.",calcNet:"Montant HT",calcTax:"Montant de la taxe",calcGross:"Montant TTC",
- addFirst:"Ajoutez d'abord des transactions.",analysisDone:"Analyse terminée",transactionsCount:"Transactions",
- missingInvoice:"Références de facture manquantes",zeroRate:"Transactions à taux zéro",
- dataWarning:"Ces indicateurs concernent la qualité des données et ne prouvent pas une infraction.",
- analysisConclusion:"dossiers ont des références de facture manquantes.",zeroConclusion:"dossiers utilisent un taux zéro.",
- legalWarning:"La conformité légale ne peut pas être établie à partir de ces seuls chiffres.",
- explanationMissing:"Une transaction sans référence est plus difficile à relier à ses justificatifs.",
- explanationZero:"La raison et la base légale doivent être vérifiées.",
- explanationTax:"Il s'agit d'un calcul mathématique, et non d'une évaluation fiscale officielle vérifiée.",
- tipMissing:"Ajoutez et vérifiez les références de facture manquantes.",
- tipZero:"Vérifiez la base légale et les justificatifs des opérations à taux zéro.",
- tipCompare:"Comparez les montants aux documents comptables et aux factures originales.",
- tipRates:"Confirmez les taux selon les règles officielles applicables.",
- preferencesSaved:"Préférences enregistrées.",clearConfirm:"Effacer définitivement tous les dossiers locaux ?",
- noQuestion:"Veuillez saisir une question.",totalAnswer:"Transactions",totalAmount:"Montant total",
- calculatedTax:"Taxes calculées",missingAnswer:"dossiers n'ont pas de référence de facture. Vérifiez les justificatifs.",
- vatAnswer:"La TVA est une taxe sur la valeur ajoutée. Calcul : montant HT × taux / 100. Vérifiez le taux légal applicable.",
- invoiceAnswer:"Consultez la section Factures pour vérifier les références enregistrées et manquantes.",
- helpAnswer:"Je peux vous aider avec les taxes calculées, les transactions, les factures et les contrôles. Posez une question précise.",
- delete:"Supprimer",missing:"Manquante"
-},
-ar:{
- welcomeDesc:"منصة ذكية لمراقبة الامتثال الضريبي. أدر معاملاتك واحسب الضرائب وتابع سجلاتك المالية في مكان واحد.",
- enter:"الدخول إلى لوحة التحكم",mainMenu:"القائمة الرئيسية",intelligence:"الذكاء والتحليل",management:"الإدارة",
- dashboard:"لوحة التحكم",transactions:"المعاملات",invoices:"الفواتير",calculator:"حاسبة الضرائب",
- analysis:"التحليل",assistant:"المساعد الذكي",explanation:"التفسير",solutions:"التوصيات",
- reports:"التقارير",settings:"الإعدادات",administrator:"المسؤول",localWorkspace:"مساحة العمل المحلية",
- welcome:"مرحباً بك",overview:"إليك نظرة عامة على وضع الامتثال الضريبي.",add:"إضافة معاملة",
- total:"إجمالي المعاملات",revenue:"إجمالي الإيرادات",tax:"الضريبة المحسوبة",review:"تحتاج إلى مراجعة",
- recorded:"السجلات المسجلة",amounts:"مبالغ المعاملات",estimated:"قيمة الضريبة التقديرية",
- missingRefs:"مراجع الفواتير الناقصة",recent:"أحدث المعاملات",viewAll:"عرض الكل",
- name:"الاسم",amount:"المبلغ",status:"الحالة",compliance:"نظرة عامة على الامتثال",
- scoreNote:"مؤشر اكتمال السجلات، وليس شهادة قانونية بالامتثال.",
- runAnalysis:"تشغيل التحليل",manageRecords:"إدارة ومراجعة السجلات المالية.",
- newTransaction:"معاملة جديدة",transactionName:"اسم المعاملة",invoiceRef:"مرجع الفاتورة",
- netAmount:"المبلغ قبل الضريبة",taxRate:"نسبة الضريبة (%)",type:"نوع المعاملة",
- sale:"بيع",purchase:"شراء",service:"خدمة",saveTransaction:"حفظ المعاملة",
- register:"سجل المعاملات",exportCSV:"تصدير CSV",invoice:"الفاتورة",rate:"النسبة",
- action:"الإجراء",invoiceDesc:"سجل الفواتير ومراجع المستندات.",
- reference:"المرجع",transaction:"المعاملة",date:"التاريخ",documentManagement:"إدارة المستندات",
- documentNote:"هذه النسخة تحفظ مراجع الفواتير فقط. استخراج بيانات المستندات تلقائياً يتطلب خدمة معالجة آمنة.",
- calcDesc:"حساب الضريبة والمبلغ الإجمالي.",calculate:"احسب",
- calcPlaceholder:"ستظهر نتيجة الحساب هنا.",analysisDesc:"فحوصات آلية مبنية على قواعد.",
- analysisResults:"نتائج التحليل",noAnalysis:"لم يتم تشغيل التحليل بعد.",conclusions:"الاستنتاجات",
- waiting:"في انتظار التحليل.",assistantDesc:"مساحة المساعدة الذكية من TaxGuard.",
- available:"المساعد متاح",botWelcome:"مرحباً! أنا مساعد TaxGuard. اسألني عن حساب الضرائب أو المعاملات أو الفواتير.",
- quickAnalyze:"تحليل المعاملات",quickTotal:"إجمالي الضرائب",quickReview:"العناصر التي تحتاج مراجعة",quickVAT:"اشرح TVA",
- askPlaceholder:"اكتب سؤالك إلى TaxGuard...",assistantNote:"المساعد المدمج يستخدم قواعد محلية وسجلاتك المحفوظة. لا يتصل بنموذج ذكاء اصطناعي خارجي.",
- explainDesc:"فهم مؤشرات التحليل.",runToExplain:"شغّل التحليل للحصول على التفسيرات.",
- solutionsDesc:"إجراءات مقترحة بناءً على مشاكل البيانات المكتشفة.",noRecommendations:"لا توجد توصيات حالياً.",
- reportsDesc:"ملخصات مالية وملفات قابلة للتصدير.",gross:"الإجمالي شامل الضريبة",downloadReport:"تحميل تقرير CSV",
- printReport:"طباعة التقرير",settingsDesc:"خصص مساحة العمل الخاصة بك.",regional:"التفضيلات الإقليمية",
- currency:"عملة العرض",defaultRate:"نسبة الضريبة الافتراضية (%)",savePreferences:"حفظ التفضيلات",
- appearance:"المظهر",switchTheme:"تغيير الوضع الليلي / النهاري",dataManagement:"إدارة البيانات",
- localDataNote:"يتم تخزين بياناتك في هذا المتصفح على هذا الجهاز.",exportRecords:"تصدير السجلات",
- deleteRecords:"حذف جميع السجلات",about:"حول TaxGuard AI",aboutText:"منصة مراقبة الامتثال الضريبي. نسخة تجريبية.",
- home:"الرئيسية",records:"السجلات",enterName:"أدخل اسم المعاملة ومبلغاً صحيحاً.",
- invalid:"يرجى إدخال بيانات معاملة صحيحة.",deleteConfirm:"هل تريد حذف هذه المعاملة؟",
- noRecords:"لا توجد سجلات بعد",noInvoices:"لا توجد فواتير",recordedStatus:"مسجلة",needsReview:"مراجعة",
- invalidValues:"قيم غير صحيحة.",calcNet:"المبلغ قبل الضريبة",calcTax:"قيمة الضريبة",calcGross:"المبلغ الإجمالي",
- addFirst:"أضف معاملات أولاً.",analysisDone:"اكتمل التحليل",transactionsCount:"عدد المعاملات",
- missingInvoice:"مراجع الفواتير الناقصة",zeroRate:"المعاملات ذات النسبة الصفرية",
- dataWarning:"هذه مؤشرات لجودة البيانات وليست دليلاً على وجود مخالفة قانونية.",
- analysisConclusion:"سجلات تفتقد إلى مراجع الفواتير.",zeroConclusion:"سجلات تستخدم نسبة ضريبية صفرية.",
- legalWarning:"لا يمكن إثبات الامتثال القانوني اعتماداً على هذه الأرقام وحدها.",
- explanationMissing:"المعاملة التي لا تحتوي على مرجع يصعب ربطها بالمستندات الداعمة.",
- explanationZero:"يجب التحقق من سبب تطبيق النسبة الصفرية والأساس القانوني لها.",
- explanationTax:"هذا حساب رياضي حسب النسبة المدخلة وليس تقييماً ضريبياً رسمياً مؤكداً.",
- tipMissing:"أضف مراجع الفواتير وتحقق من السجلات الناقصة.",
- tipZero:"تحقق من الأساس القانوني والمستندات الداعمة للمعاملات ذات النسبة الصفرية.",
- tipCompare:"قارن المبالغ مع السجلات المحاسبية والفواتير الأصلية.",
- tipRates:"تحقق من النسب وفق القواعد الرسمية المطبقة على المعاملة.",
- preferencesSaved:"تم حفظ التفضيلات.",clearConfirm:"هل تريد حذف جميع السجلات المحلية نهائياً؟",
- noQuestion:"يرجى كتابة سؤال.",totalAnswer:"عدد المعاملات",totalAmount:"مجموع المبالغ",
- calculatedTax:"مجموع الضرائب المحسوبة",missingAnswer:"سجلات لا تحتوي على مرجع فاتورة. تحقق من المستندات الداعمة.",
- vatAnswer:"TVA هي الضريبة على القيمة المضافة. طريقة الحساب: المبلغ قبل الضريبة × النسبة ÷ 100. تحقق من النسبة القانونية المطبقة.",
- invoiceAnswer:"افتح قسم الفواتير لمراجعة المراجع المسجلة والفواتير التي ينقصها مرجع.",
- helpAnswer:"يمكنني مساعدتك في الضرائب المحسوبة والمعاملات والفواتير ومؤشرات المراجعة. اطرح سؤالاً محدداً.",
- delete:"حذف",missing:"مفقود"
-}
-};
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('more-menu');
+      const btn = document.getElementById('menu-btn');
+      if (state.menuOpen && !menu.contains(e.target) && !btn.contains(e.target)) {
+        closeMenu();
+      }
+    });
 
-function t(key){
- return translations[prefs.lang]?.[key] || translations.en[key] || key;
-}
+    function navigateTo(pageKey) {
+      state.page = pageKey;
+      closeMenu();
+      logActivity(t().main5[pageKey] || t().extra12[pageKey] || pageKey);
+      renderChrome();
+      renderPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-let records=[];
-try{records=JSON.parse(localStorage.getItem("tg_records")||"[]");if(!Array.isArray(records))records=[];}catch(e){records=[];}
+    function setLanguage(lang) {
+      state.lang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = t().dir;
+      renderChrome();
+      renderPage();
+    }
 
-let prefs={currency:"DZD",rate:19,theme:"light",lang:"en"};
-try{
- const saved=JSON.parse(localStorage.getItem("tg_prefs")||"{}");
- prefs={...prefs,...saved};
-}catch(e){}
+    function setCurrency(curr) {
+      state.currency = curr;
+      renderPage();
+    }
 
-let last=null;
+    function toggleTheme() {
+      state.dark = !state.dark;
+      document.documentElement.classList.toggle('dark', state.dark);
+      renderPage();
+    }
 
-function money(n){
- return new Intl.NumberFormat(
-  prefs.lang==="ar"?"ar-DZ":prefs.lang==="fr"?"fr-FR":"en-US",
-  {maximumFractionDigits:2}
- ).format(Number(n)||0)+" "+prefs.currency;
-}
+    function renderChrome() {
+      const currentLabel = t().main5[state.page] || t().extra12[state.page] || t().homeTitle;
+      document.getElementById('header-page-title').textContent = currentLabel;
 
-function enterDashboard(){
- $("welcomeScreen").hidden=true;
- go("dashboard");
-}
+      const menuContainer = document.getElementById('menu-items-container');
+      menuContainer.innerHTML = extraKeys.map((key) => {
+        const active = state.page === key;
+        return `
+          <button onclick="navigateTo('${key}')" class="w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-start text-sm font-semibold transition ${
+            active
+              ? 'bg-indigo-600 text-white'
+              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }">
+            <span class="flex items-center gap-2.5">
+              ${icons[key]}
+              <span>${t().extra12[key]}</span>
+            </span>
+            <span class="text-xs opacity-60">›</span>
+          </button>
+        `;
+      }).join('');
 
-function go(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- const page=$(id);
- if(page)page.classList.add("active");
- document.querySelectorAll("[data-page]").forEach(b=>{
-  b.classList.toggle("active",b.dataset.page===id);
- });
- if(id==="reports")report();
-}
+      const bottomNav = document.getElementById('bottom-nav');
+      const mainKeys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
+      bottomNav.innerHTML = mainKeys.map((key) => {
+        const active = state.page === key;
+        return `
+          <button onclick="navigateTo('${key}')" class="flex flex-col items-center gap-1 rounded-xl px-2 py-1 text-[11px] font-bold transition ${
+            active ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+          }">
+            ${icons[key]}
+            <span class="truncate max-w-[76px]">${t().main5[key]}</span>
+          </button>
+        `;
+      }).join('');
+    }
 
-document.querySelectorAll("[data-page]").forEach(b=>{
- b.addEventListener("click",()=>go(b.dataset.page));
-});
+    function renderHomeCoreButtons() {
+      const mainKeys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
+      return `
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+          <div class="mb-4">
+            <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            ${mainKeys.map((key) => {
+              const isCurrent = state.page === key;
+              return `
+                <button onclick="navigateTo('${key}')" class="flex flex-col items-center justify-center gap-2 rounded-2xl border p-4 text-center font-bold text-sm transition ${
+                  isCurrent
+                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-md'
+                    : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 hover:border-indigo-400'
+                }">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl ${isCurrent ? 'bg-white/20 text-white' : 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}">
+                    ${icons[key]}
+                  </span>
+                  <span>${t().main5[key]}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `;
+    }
 
-function persist(){
- localStorage.setItem("tg_records",JSON.stringify(records));
- render();
-}
+    function renderTransactionFormAndTable() {
+      const previewHtml = state.previewCalc ? `
+        <div class="mt-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 p-4 flex flex-wrap items-center justify-between gap-4 text-sm">
+          <div>
+            <span class="text-xs text-slate-500 dark:text-slate-400">${t().taxVal}:</span>
+            <p class="font-mono font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(state.previewCalc.taxAmount)}</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-500 dark:text-slate-400">${t().totalVal}:</span>
+            <p class="font-mono font-extrabold text-slate-900 dark:text-white">${t().money(state.previewCalc.totalAmount)}</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-500 dark:text-slate-400">${t().complianceStatus}:</span>
+            <p class="font-bold ${state.previewCalc.comp.ok ? 'text-emerald-600' : 'text-rose-600'}">${state.previewCalc.comp.label}</p>
+          </div>
+        </div>
+      ` : '';
 
-function add(){
- const name=$("name").value.trim();
- const invoice=$("invoice").value.trim();
- const amount=Number($("amount").value);
- const rate=Number($("rate").value);
+      const rowsHtml = state.transactions.map((tx) => {
+        const comp = evaluateCompliance(tx.type, tx.rate);
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <td class="py-3 px-2 font-bold">${tx.name}</td>
+            <td class="py-3 px-2 font-mono text-xs">${tx.invoice}</td>
+            <td class="py-3 px-2 text-xs">${t().types[tx.type] || tx.type}</td>
+            <td class="py-3 px-2 font-mono">${t().money(tx.beforeTax)}</td>
+            <td class="py-3 px-2 font-mono">${tx.rate}%</td>
+            <td class="py-3 px-2 font-mono text-indigo-600 dark:text-indigo-400">${t().money(tx.taxAmount)}</td>
+            <td class="py-3 px-2 font-mono font-bold">${t().money(tx.totalAmount)}</td>
+            <td class="py-3 px-2">
+              <span class="rounded-full px-2.5 py-1 text-xs font-bold ${comp.ok ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'}">${comp.label}</span>
+            </td>
+            <td class="py-3 px-2">
+              <button onclick="deleteTx(${tx.id})" class="rounded-lg bg-rose-50 dark:bg-rose-950/50 px-2.5 py-1 text-xs font-bold text-rose-600 hover:bg-rose-100">×</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
- if(!name||$("amount").value===""||!Number.isFinite(amount)||amount<=0||
- !Number.isFinite(rate)||rate<0||rate>100){
-  alert(t("invalid"));return;
- }
+      return `
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+          <form onsubmit="handleSaveTx(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().txName}</label>
+              <input id="f-name" type="text" required placeholder="مثال: شراء معدات" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().invNum}</label>
+              <input id="f-invoice" type="text" required placeholder="INV-2026-003" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().txType}</label>
+              <select id="f-type" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none">
+                <option value="operational">${t().types.operational}</option>
+                <option value="sales">${t().types.sales}</option>
+                <option value="export">${t().types.export}</option>
+                <option value="personal">${t().types.personal}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().beforeTax}</label>
+              <input id="f-before-tax" type="number" step="0.01" required placeholder="10000" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().taxRate}</label>
+              <input id="f-tax-rate" type="number" step="0.1" required placeholder="19" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div class="flex items-end gap-2.5">
+              <button type="button" onclick="handleCalculate()" class="flex-1 rounded-xl border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2 text-sm font-extrabold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition">
+                ${t().calcBtn}
+              </button>
+              <button type="submit" class="flex-1 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-extrabold text-white shadow hover:bg-indigo-700 transition">
+                ${t().saveBtn}
+              </button>
+            </div>
+          </form>
+          ${previewHtml}
+        </section>
 
- records.push({
-  id:Date.now()+Math.random(),
-  name,invoice,amount,rate,
-  tax:amount*rate/100,
-  type:$("type").value,
-  date:new Date().toISOString().slice(0,10)
- });
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+          <h3 class="text-base font-extrabold mb-4">${t().resultsTableTitle}</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-start text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                  <th class="pb-3 px-2 text-start">${t().txName}</th>
+                  <th class="pb-3 px-2 text-start">${t().invNum}</th>
+                  <th class="pb-3 px-2 text-start">${t().txType}</th>
+                  <th class="pb-3 px-2 text-start">${t().beforeTax}</th>
+                  <th class="pb-3 px-2 text-start">${t().taxRate}</th>
+                  <th class="pb-3 px-2 text-start">${t().taxVal}</th>
+                  <th class="pb-3 px-2 text-start">${t().totalVal}</th>
+                  <th class="pb-3 px-2 text-start">${t().complianceStatus}</th>
+                  <th class="pb-3 px-2 text-start"></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">${rowsHtml}</tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
 
- $("name").value="";
- $("invoice").value="";
- $("amount").value="";
- persist();
-}
+    function readFormValues() {
+      const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
+      const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
+      const type = document.getElementById('f-type')?.value || 'operational';
+      const beforeTax = parseFloat(document.getElementById('f-before-tax')?.value) || 0;
+      const rate = parseFloat(document.getElementById('f-tax-rate')?.value) || 0;
+      const taxAmount = +(beforeTax * (rate / 100)).toFixed(2);
+      const totalAmount = +(beforeTax + taxAmount).toFixed(2);
+      const comp = evaluateCompliance(type, rate);
+      return { name, invoice, type, beforeTax, rate, taxAmount, totalAmount, comp };
+    }
 
-function removeRecord(id){
- if(confirm(t("deleteConfirm"))){
-  records=records.filter(r=>r.id!==id);
-  persist();
- }
-}
+    function handleCalculate() {
+      const vals = readFormValues();
+      state.previewCalc = vals;
+      logActivity(`${t().calcBtn}: ${vals.name}`);
+      renderPage();
+    }
 
-function esc(s){
- return String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
-}
+    function handleSaveTx(e) {
+      e.preventDefault();
+      const vals = readFormValues();
+      state.transactions.unshift({
+        id: Date.now(),
+        name: vals.name,
+        invoice: vals.invoice,
+        beforeTax: vals.beforeTax,
+        rate: vals.rate,
+        type: vals.type,
+        taxAmount: vals.taxAmount,
+        totalAmount: vals.totalAmount
+      });
+      state.previewCalc = vals;
+      logActivity(`${t().saveBtn}: ${vals.name} (${vals.invoice})`);
+      renderPage();
+    }
 
-function render(){
- const total=records.reduce((s,r)=>s+Number(r.amount||0),0);
- const taxes=records.reduce((s,r)=>s+Number(r.tax||0),0);
- const missing=records.filter(r=>!r.invoice).length;
+    function deleteTx(id) {
+      state.transactions = state.transactions.filter(item => item.id !== id);
+      renderPage();
+    }
 
- $("count").textContent=records.length;
- $("revenue").textContent=money(total);
- $("tax").textContent=money(taxes);
- $("risks").textContent=missing;
+    function renderPage() {
+      const container = document.getElementById('page-container');
+      const coreBlock = renderHomeCoreButtons();
+      let extraBlock = '';
 
- const complete=records.length?Math.round((records.length-missing)/records.length*100):0;
- $("score").textContent=records.length?complete+"%":"—";
- $("progress").style.width=complete+"%";
+      if (state.page === 'language') {
+        extraBlock = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+            <h3 class="text-base font-bold">${t().extra12.language}</h3>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="setLanguage('ar')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'ar' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">العربية</button>
+              <button onclick="setLanguage('en')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'en' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">English</button>
+              <button onclick="setLanguage('fr')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'fr' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">Français</button>
+            </div>
+          </section>
+        `;
+      } else if (state.page === 'currency') {
+        extraBlock = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+            <h3 class="text-base font-bold">${t().extra12.currency}</h3>
+            <div class="flex flex-wrap gap-2">
+              ${Object.keys(rates).map(c => `
+                <button onclick="setCurrency('${c}')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.currency === c ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">${c}</button>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      } else if (state.page === 'theme') {
+        extraBlock = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex items-center justify-between">
+            <h3 class="text-base font-bold">${t().extra12.theme}</h3>
+            <button onclick="toggleTheme()" class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white">${state.dark ? 'Light' : 'Dark'}</button>
+          </section>
+        `;
+      } else if (state.page === 'history') {
+        extraBlock = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2">
+            <h3 class="text-base font-bold">${t().extra12.history}</h3>
+            <ul class="list-disc ps-5 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+              ${state.activities.map(act => `<li>${act}</li>`).join('')}
+            </ul>
+          </section>
+        `;
+      } else if (!['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'].includes(state.page)) {
+        extraBlock = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2">
+            <h3 class="text-base font-bold">${t().extra12[state.page] || state.page}</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300">TaxGuard AI — Tax Compliance Monitoring</p>
+          </section>
+        `;
+      }
 
- $("recent").innerHTML=records.slice(-6).reverse().map(r=>`
- <tr>
- <td>${esc(r.name)}</td>
- <td>${money(r.amount)}</td>
- <td>${money(r.tax)}</td>
- <td><span class="status ${r.invoice?'':'warn'}">${r.invoice?t("recordedStatus"):t("needsReview")}</span></td>
- </tr>`).join("")||
- `<tr><td colspan="4" class="empty">${t("noRecords")}</td></tr>`;
+      container.innerHTML = coreBlock + extraBlock + renderTransactionFormAndTable();
+    }
 
- $("allRows").innerHTML=records.map(r=>`
- <tr>
- <td>${esc(r.name)}</td><td>${esc(r.invoice||t("missing"))}</td>
- <td>${money(r.amount)}</td><td>${r.rate}%</td>
- <td>${money(r.tax)}</td>
- <td><button class="btn red" onclick="removeRecord(${Number(r.id)})">${t("delete")}</button></td>
- </tr>`).join("")||
- `<tr><td colspan="6" class="empty">${t("noRecords")}</td></tr>`;
-
- $("invoiceRows").innerHTML=records.map(r=>`
- <tr><td>${esc(r.invoice||t("missing"))}</td>
- <td>${esc(r.name)}</td><td>${money(r.amount)}</td><td>${esc(r.date)}</td></tr>
- `).join("")||
- `<tr><td colspan="4" class="empty">${t("noInvoices")}</td></tr>`;
-
- if(last)analyze(false);
-}
-
-function calc(){
- const raw=$("ca").value;
- const a=Number(raw),r=Number($("cr").value);
- if(raw===""||!Number.isFinite(a)||a<0||!Number.isFinite(r)||r<0||r>100){
-  alert(t("invalidValues"));return;
- }
- $("calcResult").innerHTML=`
- ${t("calcNet")}: <b>${money(a)}</b><br>
- ${t("taxRate")}: ${r}%<br>
- ${t("calcTax")}: <b>${money(a*r/100)}</b><br>
- ${t("calcGross")}: <b>${money(a*(1+r/100))}</b>`;
-}
-
-function analyze(showAlert=true){
- if(!records.length){
-  if(showAlert)alert(t("addFirst"));
-  return;
- }
-
- const missing=records.filter(r=>!r.invoice);
- const zero=records.filter(r=>Number(r.rate)===0);
- const total=records.reduce((s,r)=>s+Number(r.tax||0),0);
- last={missing,zero,total};
-
- $("analysisResult").innerHTML=`
- <b>${t("analysisDone")}</b><br>
- ${t("transactionsCount")}: ${records.length}<br>
- ${t("missingInvoice")}: ${missing.length}<br>
- ${t("zeroRate")}: ${zero.length}<br>
- ${t("calculatedTax")}: ${money(total)}<br><br>
- ${t("dataWarning")}`;
-
- $("conclusions").textContent=
- `${missing.length} ${t("analysisConclusion")} ${zero.length} ${t("zeroConclusion")} ${t("legalWarning")}`;
-
- $("explanationResult").innerHTML=`
- <b>${t("missingInvoice")}:</b> ${t("explanationMissing")}<br>
- <b>${t("zeroRate")}:</b> ${t("explanationZero")}<br>
- <b>${t("calculatedTax")}:</b> ${t("explanationTax")}`;
-
- let tips=[];
- if(missing.length)tips.push(t("tipMissing"));
- if(zero.length)tips.push(t("tipZero"));
- tips.push(t("tipCompare"),t("tipRates"));
-
- $("solutionsResult").innerHTML=tips.map((x,i)=>`<p>${i+1}. ${esc(x)}</p>`).join("");
-}
-
-function report(){
- const a=records.reduce((s,r)=>s+Number(r.amount||0),0);
- const tax=records.reduce((s,r)=>s+Number(r.tax||0),0);
- $("rc").textContent=records.length;
- $("rr").textContent=money(a);
- $("rt").textContent=money(tax);
- $("rg").textContent=money(a+tax);
-}
-
-function exportCSV(){
- const rows=[
- ["Name","Invoice","Amount","Rate","Tax","Type","Date"],
- ...records.map(r=>[r.name,r.invoice,r.amount,r.rate,r.tax,r.type,r.date])
- ];
- const csv="\uFEFF"+rows.map(row=>
-  row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")
- ).join("\n");
-
- const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="TaxGuard_Report.csv";
- a.click();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function clearData(){
- if(confirm(t("clearConfirm"))){
-  records=[];last=null;
-  localStorage.removeItem("tg_records");
-  render();
- }
-}
-
-function saveSettings(){
- const rate=Number($("defaultRate").value);
- if(!Number.isFinite(rate)||rate<0||rate>100){
-  alert(t("invalidValues"));return;
- }
- prefs.currency=$("currency").value;
- prefs.rate=rate;
- localStorage.setItem("tg_prefs",JSON.stringify(prefs));
- $("rate").value=rate;
- render();
- alert(t("preferencesSaved"));
-}
-
-function toggleTheme(){
- document.body.classList.toggle("dark");
- prefs.theme=document.body.classList.contains("dark")?"dark":"light";
- localStorage.setItem("tg_prefs",JSON.stringify(prefs));
- updateThemeIcon();
-}
-
-function updateThemeIcon(){
- $("themeIcon").setAttribute("data-lucide",prefs.theme==="dark"?"sun":"moon");
- lucide.createIcons();
-}
-
-function setLanguage(lang){
- if(!translations[lang])lang="en";
- prefs.lang=lang;
- localStorage.setItem("tg_prefs",JSON.stringify(prefs));
- applyLanguage();
- render();
-}
-
-function applyLanguage(){
- const lang=prefs.lang;
- document.documentElement.lang=lang;
- document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-
- document.querySelectorAll("[data-i18n]").forEach(el=>{
-  const key=el.dataset.i18n;
-  if(t(key))el.textContent=t(key);
- });
-
- document.querySelectorAll("[data-placeholder]").forEach(el=>{
-  el.placeholder=t(el.dataset.placeholder);
- });
-
- $("language").value=lang;
- $("welcomeLanguage").value=lang;
- $("currency").value=prefs.currency;
- $("defaultRate").value=prefs.rate;
- $("rate").value=prefs.rate;
-}
-
-function addMessage(text,who){
- const el=document.createElement("div");
- el.className="message "+who;
- el.textContent=text;
- $("messages").appendChild(el);
- $("messages").scrollTop=$("messages").scrollHeight;
-}
-
-function quick(kind){
- $("question").value=kind;
- ask();
-}
-
-function ask(){
- const q=$("question").value.trim();
- if(!q)return;
-
- addMessage(q,"me");
- $("question").value="";
-
- const lang=prefs.lang;
- const total=records.reduce((s,r)=>s+Number(r.amount||0),0);
- const tax=records.reduce((s,r)=>s+Number(r.tax||0),0);
- const missing=records.filter(r=>!r.invoice).length;
- const lower=q.toLowerCase();
-
- let answer="";
-
- if(/total|sum|مجموع|إجمالي|montant|taxes|totalité/.test(lower)||lower==="total"){
-  answer=`${t("totalAnswer")}: ${records.length}. ${t("totalAmount")}: ${money(total)}. ${t("calculatedTax")}: ${money(tax)}.`;
- }else if(/review|missing|مراجعة|ناقص|manquant|vérifier/.test(lower)||lower==="review"){
-  answer=`${missing} ${t("missingAnswer")}`;
- }else if(/analy|تحليل/.test(lower)||lower==="analyze"){
-  analyze();
-  answer=t("analysisDone")+". "+t("runAnalysis");
- }else if(/vat|tva|ضريبة|tax/.test(lower)||lower==="vat"){
-  answer=t("vatAnswer");
- }else if(/invoice|facture|فاتورة/.test(lower)){
-  answer=t("invoiceAnswer");
- }else{
-  answer=t("helpAnswer");
- }
-
- setTimeout(()=>addMessage(answer,"bot"),150);
-}
-
-/* INITIALIZATION */
-document.body.classList.toggle("dark",prefs.theme==="dark");
-applyLanguage();
-render();
-updateThemeIcon();
-lucide.createIcons();
-</script>
+    window.addEventListener('DOMContentLoaded', () => {
+      renderChrome();
+      renderPage();
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        const app = document.getElementById('app-root');
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.classList.add('hidden');
+          app.classList.remove('hidden');
+        }, 450);
+      }, 2000);
+    });
+  </script>
 </body>
 </html>
