@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaxGuard AI — Fiscal Audit & Risk Engine</title>
+  <title>TaxGuard AI — Fiscal Audit & Compliance</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -42,7 +42,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- Animated Splash Screen -->
+  <!-- Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white transition-opacity duration-500">
     <div class="shield-anim mb-5 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-cyan-500 shadow-2xl">
       <svg class="h-14 w-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <!-- Application Container -->
+  <!-- Main App -->
   <div id="app-root" class="hidden min-h-screen flex flex-col pb-24">
 
     <!-- Top Header -->
@@ -162,7 +162,7 @@
       ],
       activities: [
         'فحص المعاملات مقابل قواعد الامتثال الجبائي',
-        'تحديد المصاريف المعرضة لرفض الخصم أو الغرامات'
+        'تحديد المصاريف المعرضة لرفض الخصم أو المخاطر'
       ]
     };
 
@@ -260,6 +260,17 @@
           help: 'المساعدة',
           about: 'حول التطبيق'
         },
+        sectionDetails: {
+          transactions: 'عرض وفحص جميع المعاملات المسجلة ومستوى خطورة كل عملية.',
+          invoices: 'مراجعة أرقام الفواتير والتحقق من توفر الفواتير الرسمية المستوفاة.',
+          calculator: 'محاكاة الحساب وفحص أثر نسبة الضريبة ونوع العملية قبل الحفظ.',
+          assistant: 'مساعد التدقيق الذكي: يوضح سبب كل تنبيه أو مخالفة وكيفية معالجتها.',
+          compliance: 'فاحص الامتثال الجبائي: يفرز العمليات المتوافقة عن العمليات المعرضة للاستبعاد.',
+          reports: 'ملخص المؤشرات والتقارير التحليلية لحالة الامتثال والمخاطر.',
+          regulations: 'القواعد والضوابط المرجعية المطبقة في الفحص (فواتير، خصم، سقف نقدي، نسب).',
+          deadlines: 'متابعة المواعيد الضريبية ومراجعة الملفات قبل موعد التصريح.',
+          settings: 'تخصيص تفضيلات اللغة والعملة والمظهر للتطبيق.'
+        },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       en: {
@@ -321,6 +332,17 @@
           help: 'Help',
           about: 'About'
         },
+        sectionDetails: {
+          transactions: 'Inspect logged transactions and their pre-filing risk classifications.',
+          invoices: 'Review invoice numbers and official invoice verification status.',
+          calculator: 'Simulate tax calculations and rule checks prior to saving.',
+          assistant: 'Smart Audit Assistant: explains risk triggers and recommended corrections.',
+          compliance: 'Compliance Checker: separates compliant entries from at-risk deductions.',
+          reports: 'Analytical summary of compliance rate and risk exposure.',
+          regulations: 'Active rule criteria applied during pre-filing audit.',
+          deadlines: 'Pre-filing review checkpoints and tax calendar reminders.',
+          settings: 'Configure language, currency, and appearance options.'
+        },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       fr: {
@@ -381,6 +403,17 @@
           theme: 'Thème',
           help: 'Aide',
           about: 'À propos'
+        },
+        sectionDetails: {
+          transactions: 'Consultez les opérations enregistrées et leur niveau de risque.',
+          invoices: 'Vérifiez les numéros et la validité des factures fiscales.',
+          calculator: 'Simulez le calcul fiscal et la conformité avant enregistrement.',
+          assistant: 'Assistant d’audit : explique les alertes et actions correctives.',
+          compliance: 'Vérificateur de conformité : distingue opérations conformes et à risque.',
+          reports: 'Synthèse analytique de la conformité et de l’exposition au risque.',
+          regulations: 'Critères de contrôle fiscal appliqués avant déclaration.',
+          deadlines: 'Points de contrôle avant les échéances fiscales.',
+          settings: 'Gérez la langue, la devise et l’affichage de l’application.'
         },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
@@ -789,36 +822,26 @@
       `;
     }
 
+    function renderActiveSectionBanner() {
+      const detailText = t().sectionDetails?.[state.page];
+      if (!detailText) return '';
+      return `
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">${t().labels[state.page] || state.page}</h3>
+          </div>
+          <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">${detailText}</p>
+        </section>
+      `;
+    }
+
     function renderPage() {
       const container = document.getElementById('page-container');
-      let sectionNote = '';
-
-      if (state.page === 'history') {
-        sectionNote = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-1.5">
-            <h3 class="text-sm font-extrabold">${t().labels.history}</h3>
-            <ul class="list-disc ps-5 text-xs text-slate-600 dark:text-slate-300 space-y-1">
-              ${state.activities.map(a => `<li>${a}</li>`).join('')}
-            </ul>
-          </section>
-        `;
-      } else if (state.page === 'regulations') {
-        sectionNote = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
-            <strong class="text-slate-900 dark:text-white">${t().labels.regulations}:</strong>
-            فحص الفاتورة الرسمية، عدم قابلية خصم المصاريف الشخصية، مراقبة سقف الدفع النقدي، ومطابقة النسب الضريبية.
-          </section>
-        `;
-      } else if (state.page === 'deadlines') {
-        sectionNote = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
-            <strong class="text-slate-900 dark:text-white">${t().labels.deadlines}:</strong>
-            مراجعة المعاملات وتصفية المخاطر قبل موعد الإقرار الشهري (قبل يوم 20 من الشهر).
-          </section>
-        `;
-      }
-
-      container.innerHTML = renderHome5AndAuditCard() + renderAuditKPIs() + sectionNote + renderFormAndAuditTable();
+      container.innerHTML =
+        renderHome5AndAuditCard() +
+        renderAuditKPIs() +
+        renderActiveSectionBanner() +
+        renderFormAndAuditTable();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
