@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaxGuard AI — Tax Compliance Monitoring</title>
+  <title>TaxGuard AI — Fiscal Compliance & Risk Audit</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -27,8 +27,8 @@
       font-family: 'Cairo', 'Inter', sans-serif;
     }
     @keyframes pulseShield {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.55)); }
-      50% { transform: scale(1.07); filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.75)); }
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 14px rgba(99, 102, 241, 0.55)); }
+      50% { transform: scale(1.07); filter: drop-shadow(0 0 26px rgba(34, 211, 238, 0.75)); }
     }
     @keyframes loadBar {
       0% { width: 0%; }
@@ -42,7 +42,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- Animated Splash Screen -->
+  <!-- Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white transition-opacity duration-500">
     <div class="shield-anim mb-5 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-cyan-500 shadow-2xl">
       <svg class="h-14 w-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -50,20 +50,20 @@
       </svg>
     </div>
     <h1 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-cyan-300 bg-clip-text text-transparent">TaxGuard AI</h1>
-    <p class="mt-2 text-xs text-slate-400">Tax Compliance Monitoring</p>
+    <p class="mt-2 text-xs text-slate-400">Fiscal Risk & Compliance Intelligence</p>
     <div class="mt-7 h-1.5 w-52 overflow-hidden rounded-full bg-slate-800">
       <div class="progress-anim h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400"></div>
     </div>
   </div>
 
-  <!-- Main App -->
+  <!-- Application Shell -->
   <div id="app-root" class="hidden min-h-screen flex flex-col pb-24">
 
     <!-- Top Header -->
     <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <button onclick="navigateTo('dashboard')" class="flex items-center gap-3 text-start">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white shadow">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
@@ -74,7 +74,6 @@
           </div>
         </button>
 
-        <!-- Quick Language, Currency, Theme & Three-Dot Menu -->
         <div class="flex items-center gap-2">
           <select id="lang-switcher" onchange="setLanguage(this.value)" class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 py-2 text-xs font-bold focus:outline-none">
             <option value="ar">العربية</option>
@@ -110,7 +109,7 @@
       </div>
     </header>
 
-    <!-- Main Page Content -->
+    <!-- Main Container -->
     <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 space-y-5"></main>
 
     <!-- 10-Icon Bottom Navigation Bar -->
@@ -120,56 +119,76 @@
   </div>
 
   <script>
+    const CASH_LIMIT_DZD = 100000; // Cash payment threshold for risk audit
+
     const state = {
       lang: 'ar',
       currency: 'DZD',
       dark: false,
       page: 'dashboard',
       menuOpen: false,
-      previewCalc: null,
-      transactions: [
+      lastAudit: null,
+      records: [
         {
           id: 1,
-          name: 'شراء معدات مكتبية',
-          invoice: 'INV-2026-001',
-          beforeTax: 10000,
+          name: 'فاتورة بيع خدمات استشارية',
+          invoice: 'INV-2026-011',
+          beforeTax: 120000,
           rate: 19,
-          type: 'operational',
-          taxAmount: 1900,
-          totalAmount: 11900
+          type: 'sale',
+          payment: 'bank',
+          hasInvoice: true
         },
         {
           id: 2,
-          name: 'فاتورة خدمات استشارية',
-          invoice: 'INV-2026-002',
+          name: 'شراء حواسيب مكتبية للنشاط',
+          invoice: 'INV-2026-012',
+          beforeTax: 80000,
+          rate: 19,
+          type: 'purchase_op',
+          payment: 'bank',
+          hasInvoice: true
+        },
+        {
+          id: 3,
+          name: 'مصروف شخصي عائلي',
+          invoice: 'INV-2026-013',
           beforeTax: 25000,
           rate: 19,
-          type: 'sales',
-          taxAmount: 4750,
-          totalAmount: 29750
+          type: 'personal',
+          payment: 'cash',
+          hasInvoice: true
+        },
+        {
+          id: 4,
+          name: 'تصدير برمجيات معفاة بنسبة 19%',
+          invoice: 'INV-2026-014',
+          beforeTax: 150000,
+          rate: 19,
+          type: 'export',
+          payment: 'bank',
+          hasInvoice: true
         }
       ],
       activities: [
-        'فحص المعاملات مقابل القواعد الضريبية',
-        'تحديث لوحة المراقبة والحسابات',
-        'تهيئة اللغة والعملة'
+        'تشغيل محرك فحص المخاطر الجبائية وتسوية G50',
+        'مراجعة الفواتير والعمليات غير المتوافقة'
       ]
     };
 
     const rates = { DZD: 1, USD: 1 / 134.5, EUR: 0.92 / 134.5, SAR: 3.75 / 134.5 };
     const symbols = { DZD: 'د.ج ', USD: '$', EUR: '€', SAR: 'ر.س ' };
 
-    function round2(num) {
-      return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
-    }
-
-    function computeTax(beforeTax, rate) {
-      const base = Math.max(0, Number(beforeTax) || 0);
-      const pct = Math.max(0, Number(rate) || 0);
-      const taxAmount = round2((base * pct) / 100);
-      const totalAmount = round2(base + taxAmount);
-      return { beforeTax: round2(base), rate: round2(pct), taxAmount, totalAmount };
-    }
+    const main5Keys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
+    const bottom10Keys = [
+      'dashboard', 'transactions', 'invoices', 'calculator', 'assistant',
+      'compliance', 'reports', 'regulations', 'deadlines', 'settings'
+    ];
+    const menuExtraKeys = [
+      'compliance', 'regulations', 'deadlines', 'reports',
+      'notifications', 'currency', 'history', 'language',
+      'theme', 'settings', 'help', 'about'
+    ];
 
     const icons = {
       dashboard: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
@@ -191,47 +210,46 @@
       about: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
     };
 
-    const bottom10Keys = [
-      'dashboard',
-      'transactions',
-      'invoices',
-      'calculator',
-      'assistant',
-      'compliance',
-      'reports',
-      'regulations',
-      'deadlines',
-      'settings'
-    ];
-
-    const menuExtraKeys = [
-      'compliance', 'regulations', 'deadlines', 'reports',
-      'notifications', 'currency', 'history', 'language',
-      'theme', 'settings', 'help', 'about'
-    ];
-
     const dict = {
       ar: {
         dir: 'rtl',
+        homeTitle: 'الخدمات الأساسية الخمس',
+        homeSub: 'مراقبة الامتثال الجبائي واكتشاف الأخطاء قبل التصريح — بدون تسجيل دخول.',
+        problemBannerTitle: 'المشكلة التي يعالجها TaxGuard AI',
+        problemBannerDesc: 'الاعتماد على آلة حاسبة تقليدية قد يؤدي إلى خصم مصاريف غير مؤهلة أو تطبيق نسبة TVA خاطئة أو تجاوز سقف الدفع نقداً مما يسبب غرامات عند التدقيق الجبائي. يقوم النظام بتشخيص كل معاملة واحتساب صافي التصريح بدقة.',
         txName: 'اسم المعاملة',
         invNum: 'رقم الفاتورة',
         beforeTax: 'المبلغ قبل الضريبة',
         taxRate: 'نسبة الضريبة (%)',
         txType: 'نوع المعاملة',
+        paymentMethod: 'طريقة الدفع',
+        hasInvoiceLbl: 'تتوفر فاتورة رسمية مكتملة البيانات',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'جدول النتائج بعد الحفظ',
+        resultsTableTitle: 'سجل التدقيق والامتثال الجبائي بعد الحفظ',
         taxVal: 'قيمة الضريبة',
         totalVal: 'المجموع بعد الضريبة',
-        complianceStatus: 'الامتثال الضريبي',
-        totalBeforeSummary: 'إجمالي المبالغ قبل الضريبة',
-        totalTaxSummary: 'إجمالي الضرائب المحسوبة',
-        totalAfterSummary: 'الإجمالي العام شامل الضريبة',
+        deductibleTaxVal: 'TVA القابلة للخصم',
+        diagnosisCol: 'التشخيص الجبائي والقرار',
+        riskCol: 'مستوى الخطر',
+        vatCollected: 'TVA المحصّلة (المبيعات)',
+        vatRecoverable: 'TVA القابلة للاسترجاع',
+        netPayable: 'صافي الضريبة المستحقة (G50)',
+        riskExposure: 'مخاطر / غرامات محتملة',
         types: {
-          operational: 'نفقات تشغيلية (Operational)',
-          sales: 'مبيعات خاضعة للضريبة (Sales)',
-          export: 'تصدير معفى (Export)',
-          personal: 'مصروف شخصي (Personal)'
+          sale: 'مبيعات خاضعة للضريبة',
+          purchase_op: 'مشتريات تشغيلية مؤهلة للخصم',
+          export: 'تصدير معفى من الضريبة (0%)',
+          personal: 'مصروف شخصي (غير قابل للخصم)'
+        },
+        payments: {
+          bank: 'تحويل بنكي / شيك',
+          cash: 'دفع نقدي (Espèces)'
+        },
+        risks: {
+          low: 'منخفض (آمن)',
+          medium: 'متوسط (تنبيه)',
+          high: 'مرتفع (مخالفة)'
         },
         labels: {
           dashboard: 'الرئيسية',
@@ -252,32 +270,47 @@
           help: 'المساعدة',
           about: 'حول التطبيق'
         },
-        money: (dzd) => {
-          const converted = round2(dzd * rates[state.currency]);
-          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
+        money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       en: {
         dir: 'ltr',
+        homeTitle: 'Five Core Services',
+        homeSub: 'Fiscal compliance monitoring & pre-filing risk audit — no authentication required.',
+        problemBannerTitle: 'Problem Solved by TaxGuard AI',
+        problemBannerDesc: 'Relying on a plain calculator risks deducting non-eligible expenses, applying wrong VAT rates, or breaching cash thresholds—causing tax audit penalties. TaxGuard AI audits each entry and computes net tax liability.',
         txName: 'Transaction Name',
         invNum: 'Invoice Number',
         beforeTax: 'Amount Before Tax',
         taxRate: 'Tax Rate (%)',
         txType: 'Transaction Type',
+        paymentMethod: 'Payment Method',
+        hasInvoiceLbl: 'Valid official tax invoice attached',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'Saved Transactions Results Table',
+        resultsTableTitle: 'Saved Fiscal Audit & Compliance Table',
         taxVal: 'Tax Amount',
         totalVal: 'Total After Tax',
-        complianceStatus: 'Tax Compliance',
-        totalBeforeSummary: 'Total Before Tax',
-        totalTaxSummary: 'Total Calculated Tax',
-        totalAfterSummary: 'Grand Total (Incl. Tax)',
+        deductibleTaxVal: 'Deductible VAT',
+        diagnosisCol: 'Audit Diagnosis & Action',
+        riskCol: 'Risk Level',
+        vatCollected: 'Collected VAT (Sales)',
+        vatRecoverable: 'Recoverable VAT',
+        netPayable: 'Net Tax Payable',
+        riskExposure: 'Potential Penalty Exposure',
         types: {
-          operational: 'Operational Expense',
-          sales: 'Taxable Sales',
-          export: 'Exempt Export',
-          personal: 'Personal Expense'
+          sale: 'Taxable Sales',
+          purchase_op: 'Deductible Operational Expense',
+          export: 'Zero-Rated Export (0%)',
+          personal: 'Personal Expense (Non-Deductible)'
+        },
+        payments: {
+          bank: 'Bank Transfer / Check',
+          cash: 'Cash Payment'
+        },
+        risks: {
+          low: 'Low Risk',
+          medium: 'Medium Risk',
+          high: 'High Risk'
         },
         labels: {
           dashboard: 'Dashboard',
@@ -298,32 +331,47 @@
           help: 'Help',
           about: 'About'
         },
-        money: (dzd) => {
-          const converted = round2(dzd * rates[state.currency]);
-          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
+        money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       fr: {
         dir: 'ltr',
+        homeTitle: 'Cinq Services Principaux',
+        homeSub: 'Suivi de conformité fiscale et audit des risques — sans authentification.',
+        problemBannerTitle: 'Problème Résolu par TaxGuard AI',
+        problemBannerDesc: 'Une simple calculatrice n’empêche ni la déduction de charges non éligibles, ni un mauvais taux de TVA, ni le dépassement du seuil en espèces. TaxGuard AI audite chaque opération et calcule la TVA nette.',
         txName: 'Nom de la transaction',
         invNum: 'Numéro de facture',
         beforeTax: 'Montant hors taxe',
         taxRate: 'Taux de taxe (%)',
         txType: 'Type de transaction',
+        paymentMethod: 'Mode de paiement',
+        hasInvoiceLbl: 'Facture fiscale officielle complète disponible',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'Tableau des résultats enregistrés',
+        resultsTableTitle: 'Tableau d’Audit Fiscal et Conformité',
         taxVal: 'Montant de la taxe',
         totalVal: 'Total TTC',
-        complianceStatus: 'Conformité fiscale',
-        totalBeforeSummary: 'Total Hors Taxe',
-        totalTaxSummary: 'Total Taxes Calculées',
-        totalAfterSummary: 'Total Général TTC',
+        deductibleTaxVal: 'TVA Déductible',
+        diagnosisCol: 'Diagnostic & Recommandation',
+        riskCol: 'Niveau de Risque',
+        vatCollected: 'TVA Collectée (Ventes)',
+        vatRecoverable: 'TVA Récupérable',
+        netPayable: 'TVA Nette à Payer',
+        riskExposure: 'Risque de Pénalité Estimé',
         types: {
-          operational: 'Charge opérationnelle',
-          sales: 'Ventes taxables',
-          export: 'Exportation exonérée',
-          personal: 'Dépense personnelle'
+          sale: 'Ventes taxables',
+          purchase_op: 'Charge opérationnelle déductible',
+          export: 'Exportation exonérée (0%)',
+          personal: 'Dépense personnelle (Non déductible)'
+        },
+        payments: {
+          bank: 'Virement / Chèque',
+          cash: 'Paiement en espèces'
+        },
+        risks: {
+          low: 'Risque Faible',
+          medium: 'Risque Moyen',
+          high: 'Risque Élevé'
         },
         labels: {
           dashboard: 'Accueil',
@@ -344,29 +392,92 @@
           help: 'Aide',
           about: 'À propos'
         },
-        money: (dzd) => {
-          const converted = round2(dzd * rates[state.currency]);
-          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
+        money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
     };
+
+    function round2(num) {
+      return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
+    }
 
     function t() {
       return dict[state.lang];
     }
 
-    function logActivity(text) {
-      state.activities.unshift(text);
+    function logActivity(msg) {
+      state.activities.unshift(msg);
       if (state.activities.length > 20) state.activities.pop();
     }
 
-    function evaluateCompliance(type, rate) {
-      if (type === 'personal') return { ok: false, label: state.lang === 'ar' ? 'مخالف (شخصي)' : 'Non-Compliant' };
-      if (type === 'export' && rate > 0) return { ok: false, label: state.lang === 'ar' ? 'تنبيه (تصدير بضريبة)' : 'Review (Export > 0%)' };
-      if ((type === 'sales' || type === 'operational') && rate !== 19 && rate !== 9) {
-        return { ok: false, label: state.lang === 'ar' ? 'مراجعة (نسبة غير قياسية)' : 'Review (VAT Rate)' };
+    // Core fiscal audit engine (solves tax risk & deduction errors beyond plain arithmetic)
+    function auditTransaction(item) {
+      const beforeTax = Math.max(0, Number(item.beforeTax) || 0);
+      const rate = Math.max(0, Number(item.rate) || 0);
+      const taxAmount = round2((beforeTax * rate) / 100);
+      const totalAmount = round2(beforeTax + taxAmount);
+
+      let risk = 'low';
+      let deductibleTax = 0;
+      let penaltyExposure = 0;
+      let diagnosis = '';
+
+      if (!item.hasInvoice) {
+        risk = 'high';
+        deductibleTax = 0;
+        penaltyExposure = round2(Math.max(taxAmount, beforeTax * 0.1));
+        diagnosis = state.lang === 'ar'
+          ? 'رفض الخصم: غياب الفاتورة الرسمية يعرّض العملية لعدم الاعتراف الجبائي وغرامة.'
+          : 'Deduction rejected: missing official tax invoice creates audit disallowance risk.';
+      } else if (item.type === 'personal') {
+        risk = 'high';
+        deductibleTax = 0;
+        penaltyExposure = round2(taxAmount * 0.5);
+        diagnosis = state.lang === 'ar'
+          ? 'مخالفة قاعدة الخصم: المصاريف الشخصية غير قابلة لاسترجاع TVA أو الخصم الضريبي.'
+          : 'Rule violation: personal expenses are non-deductible for tax or VAT recovery.';
+      } else if (item.type === 'export' && rate > 0) {
+        risk = 'medium';
+        deductibleTax = 0;
+        penaltyExposure = round2(taxAmount);
+        diagnosis = state.lang === 'ar'
+          ? 'تنبيه نسبة التصدير: التصدير معفى (0%)؛ احتساب ضريبة 19% قد يربك الإقرار.'
+          : 'Export rate warning: exports are typically 0%; charging VAT may distort filing.';
+      } else if ((item.type === 'sale' || item.type === 'purchase_op') && rate !== 19 && rate !== 9) {
+        risk = 'medium';
+        deductibleTax = item.type === 'purchase_op' ? taxAmount : 0;
+        penaltyExposure = round2(beforeTax * 0.05);
+        diagnosis = state.lang === 'ar'
+          ? 'تنبيه نسبة TVA: النسبة المدخلة تختلف عن النسب القياسية (19% أو 9%)؛ يُنصح بالمراجعة.'
+          : 'VAT rate alert: rate differs from standard 19% / 9% benchmarks; review recommended.';
+      } else if (item.payment === 'cash' && totalAmount > CASH_LIMIT_DZD) {
+        risk = 'high';
+        deductibleTax = 0;
+        penaltyExposure = round2(totalAmount * 0.1);
+        diagnosis = state.lang === 'ar'
+          ? 'تجاوز سقف الدفع نقداً: المبلغ النقدي يفوق الحد المسموح وقد يُستبعد من الخصم.'
+          : 'Cash threshold exceeded: cash settlement above limit risks deduction exclusion.';
+      } else {
+        risk = 'low';
+        deductibleTax = item.type === 'purchase_op' ? taxAmount : 0;
+        penaltyExposure = 0;
+        diagnosis = state.lang === 'ar'
+          ? 'متوافق جبائياً: شروط الفاتورة ونوع العملية ونسبة الضريبة مطابقة للقواعد.'
+          : 'Compliant: invoice, transaction type, and tax rate align with active rules.';
       }
-      return { ok: true, label: state.lang === 'ar' ? 'متوافق' : 'Compliant' };
+
+      const collectedTax = item.type === 'sale' ? taxAmount : 0;
+
+      return {
+        beforeTax: round2(beforeTax),
+        rate: round2(rate),
+        taxAmount,
+        totalAmount,
+        deductibleTax,
+        collectedTax,
+        penaltyExposure,
+        risk,
+        diagnosis
+      };
     }
 
     function toggleMenu(e) {
@@ -400,10 +511,10 @@
       }
     });
 
-    function navigateTo(pageKey) {
-      state.page = pageKey;
+    function navigateTo(key) {
+      state.page = key;
       closeMenu();
-      logActivity(t().labels[pageKey] || pageKey);
+      logActivity(t().labels[key] || key);
       renderChrome();
       renderPage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -438,9 +549,7 @@
         const active = state.page === key;
         return `
           <button onclick="navigateTo('${key}')" class="w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-start text-sm font-semibold transition ${
-            active
-              ? 'bg-indigo-600 text-white'
-              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+            active ? 'bg-indigo-600 text-white' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
           }">
             <span class="flex items-center gap-2.5">
               ${icons[key]}
@@ -456,9 +565,7 @@
         const active = state.page === key;
         return `
           <button onclick="navigateTo('${key}')" class="min-w-[66px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-[11px] font-bold transition ${
-            active
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            active ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }">
             ${icons[key]}
             <span class="truncate max-w-[64px]">${t().labels[key]}</span>
@@ -467,67 +574,169 @@
       }).join('');
     }
 
-    function renderSummaryCards() {
-      const sumBefore = round2(state.transactions.reduce((acc, x) => acc + x.beforeTax, 0));
-      const sumTax = round2(state.transactions.reduce((acc, x) => acc + x.taxAmount, 0));
-      const sumAfter = round2(state.transactions.reduce((acc, x) => acc + x.totalAmount, 0));
-
+    function renderHome5AndProblemCard() {
       return `
-        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">${t().totalBeforeSummary}</p>
-            <p class="mt-1.5 font-mono text-xl font-extrabold">${t().money(sumBefore)}</p>
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
+            </div>
           </div>
-          <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${t().totalTaxSummary}</p>
-            <p class="mt-1.5 font-mono text-xl font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(sumTax)}</p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            ${main5Keys.map((key) => {
+              const active = state.page === key;
+              return `
+                <button onclick="navigateTo('${key}')" class="flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center text-xs sm:text-sm font-bold transition ${
+                  active
+                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-md'
+                    : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/70 hover:border-indigo-400'
+                }">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-xl ${active ? 'bg-white/20 text-white' : 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}">
+                    ${icons[key]}
+                  </span>
+                  <span>${t().labels[key]}</span>
+                </button>
+              `;
+            }).join('')}
           </div>
-          <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">${t().totalAfterSummary}</p>
-            <p class="mt-1.5 font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400">${t().money(sumAfter)}</p>
+
+          <div class="rounded-xl border border-indigo-200/80 dark:border-indigo-800/60 bg-indigo-50/60 dark:bg-indigo-950/30 p-3.5">
+            <p class="text-xs font-extrabold text-indigo-700 dark:text-indigo-300">${t().problemBannerTitle}</p>
+            <p class="mt-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300">${t().problemBannerDesc}</p>
           </div>
         </section>
       `;
     }
 
-    function renderTransactionFormAndTable() {
-      const previewHtml = state.previewCalc ? `
-        <div class="mt-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-          <div>
-            <span class="text-xs text-slate-500 dark:text-slate-400">${t().beforeTax}:</span>
-            <p class="font-mono font-bold">${t().money(state.previewCalc.beforeTax)}</p>
+    function renderFiscalKPIs() {
+      let collectedSum = 0;
+      let deductibleSum = 0;
+      let penaltySum = 0;
+
+      state.records.forEach((rec) => {
+        const res = auditTransaction(rec);
+        collectedSum = round2(collectedSum + res.collectedTax);
+        deductibleSum = round2(deductibleSum + res.deductibleTax);
+        penaltySum = round2(penaltySum + res.penaltyExposure);
+      });
+
+      const netTax = round2(collectedSum - deductibleSum);
+
+      return `
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">${t().vatCollected}</p>
+            <p class="mt-1.5 font-mono text-lg font-extrabold">${t().money(collectedSum)}</p>
           </div>
-          <div>
-            <span class="text-xs text-slate-500 dark:text-slate-400">${t().taxVal} (${state.previewCalc.rate}%):</span>
-            <p class="font-mono font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(state.previewCalc.taxAmount)}</p>
+          <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">${t().vatRecoverable}</p>
+            <p class="mt-1.5 font-mono text-lg font-extrabold text-emerald-600 dark:text-emerald-400">${t().money(deductibleSum)}</p>
           </div>
-          <div>
-            <span class="text-xs text-slate-500 dark:text-slate-400">${t().totalVal}:</span>
-            <p class="font-mono font-extrabold text-slate-900 dark:text-white">${t().money(state.previewCalc.totalAmount)}</p>
+          <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${t().netPayable}</p>
+            <p class="mt-1.5 font-mono text-lg font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(netTax)}</p>
           </div>
-          <div>
-            <span class="text-xs text-slate-500 dark:text-slate-400">${t().complianceStatus}:</span>
-            <p class="font-bold ${state.previewCalc.comp.ok ? 'text-emerald-600' : 'text-rose-600'}">${state.previewCalc.comp.label}</p>
+          <div class="rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-rose-600 dark:text-rose-400">${t().riskExposure}</p>
+            <p class="mt-1.5 font-mono text-lg font-extrabold text-rose-600 dark:text-rose-400">${t().money(penaltySum)}</p>
           </div>
+        </section>
+      `;
+    }
+
+    function readFormInput() {
+      const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
+      const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
+      const type = document.getElementById('f-type')?.value || 'purchase_op';
+      const payment = document.getElementById('f-payment')?.value || 'bank';
+      const beforeTax = parseFloat(document.getElementById('f-before-tax')?.value) || 0;
+      const rate = parseFloat(document.getElementById('f-tax-rate')?.value) || 0;
+      const hasInvoice = Boolean(document.getElementById('f-has-invoice')?.checked);
+
+      const raw = { name, invoice, type, payment, beforeTax, rate, hasInvoice };
+      const audit = auditTransaction(raw);
+      return { ...raw, audit };
+    }
+
+    function handleCalculate() {
+      state.lastAudit = readFormInput();
+      logActivity(`${t().calcBtn}: ${state.lastAudit.name}`);
+      renderPage();
+    }
+
+    function handleSaveTransaction(e) {
+      e.preventDefault();
+      const entry = readFormInput();
+      state.records.unshift({
+        id: Date.now(),
+        name: entry.name,
+        invoice: entry.invoice,
+        beforeTax: entry.audit.beforeTax,
+        rate: entry.audit.rate,
+        type: entry.type,
+        payment: entry.payment,
+        hasInvoice: entry.hasInvoice
+      });
+      state.lastAudit = entry;
+      logActivity(`${t().saveBtn}: ${entry.name} (${entry.invoice})`);
+      renderPage();
+    }
+
+    function deleteRecord(id) {
+      state.records = state.records.filter((r) => r.id !== id);
+      renderPage();
+    }
+
+    function renderFormAndAuditTable() {
+      const riskBadgeMap = {
+        low: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+        medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+        high: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
+      };
+
+      const previewBox = state.lastAudit ? `
+        <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-4 space-y-2 text-sm">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <span class="text-xs text-slate-500">${t().taxVal} (${state.lastAudit.audit.rate}%):</span>
+              <p class="font-mono font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(state.lastAudit.audit.taxAmount)}</p>
+            </div>
+            <div>
+              <span class="text-xs text-slate-500">${t().totalVal}:</span>
+              <p class="font-mono font-extrabold">${t().money(state.lastAudit.audit.totalAmount)}</p>
+            </div>
+            <div>
+              <span class="text-xs text-slate-500">${t().deductibleTaxVal}:</span>
+              <p class="font-mono font-bold text-emerald-600">${t().money(state.lastAudit.audit.deductibleTax)}</p>
+            </div>
+            <div>
+              <span class="text-xs text-slate-500">${t().riskCol}:</span>
+              <p class="font-bold">${t().risks[state.lastAudit.audit.risk]}</p>
+            </div>
+          </div>
+          <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 pt-1">${state.lastAudit.audit.diagnosis}</p>
         </div>
       ` : '';
 
-      const rowsHtml = state.transactions.map((tx) => {
-        const comp = evaluateCompliance(tx.type, tx.rate);
+      const rowsHtml = state.records.map((rec) => {
+        const a = auditTransaction(rec);
         return `
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td class="py-3 px-2 font-bold">${tx.name}</td>
-            <td class="py-3 px-2 font-mono text-xs">${tx.invoice}</td>
-            <td class="py-3 px-2 text-xs">${t().types[tx.type] || tx.type}</td>
-            <td class="py-3 px-2 font-mono">${t().money(tx.beforeTax)}</td>
-            <td class="py-3 px-2 font-mono">${tx.rate}%</td>
-            <td class="py-3 px-2 font-mono text-indigo-600 dark:text-indigo-400">${t().money(tx.taxAmount)}</td>
-            <td class="py-3 px-2 font-mono font-bold">${t().money(tx.totalAmount)}</td>
+            <td class="py-3 px-2 font-bold">${rec.name}</td>
+            <td class="py-3 px-2 font-mono text-xs">${rec.invoice}</td>
+            <td class="py-3 px-2 text-xs">${t().types[rec.type] || rec.type}</td>
+            <td class="py-3 px-2 font-mono">${t().money(a.beforeTax)}</td>
+            <td class="py-3 px-2 font-mono">${a.rate}%</td>
+            <td class="py-3 px-2 font-mono text-indigo-600 dark:text-indigo-400">${t().money(a.taxAmount)}</td>
+            <td class="py-3 px-2 font-mono font-bold">${t().money(a.totalAmount)}</td>
             <td class="py-3 px-2">
-              <span class="rounded-full px-2.5 py-1 text-xs font-bold ${comp.ok ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'}">${comp.label}</span>
+              <span class="rounded-full px-2.5 py-1 text-xs font-bold ${riskBadgeMap[a.risk]}">${t().risks[a.risk]}</span>
             </td>
+            <td class="py-3 px-2 text-xs max-w-xs text-slate-600 dark:text-slate-300">${a.diagnosis}</td>
             <td class="py-3 px-2">
-              <button onclick="deleteTx(${tx.id})" class="rounded-lg bg-rose-50 dark:bg-rose-950/50 px-2.5 py-1 text-xs font-bold text-rose-600 hover:bg-rose-100">×</button>
+              <button onclick="deleteRecord(${rec.id})" class="rounded-lg bg-rose-50 dark:bg-rose-950/50 px-2.5 py-1 text-xs font-bold text-rose-600 hover:bg-rose-100">×</button>
             </td>
           </tr>
         `;
@@ -535,20 +744,20 @@
 
       return `
         <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
-          <form onsubmit="handleSaveTx(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <form onsubmit="handleSaveTransaction(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label class="block text-xs font-bold mb-1">${t().txName}</label>
-              <input id="f-name" type="text" required placeholder="مثال: شراء معدات" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-name" type="text" required placeholder="مثال: فاتورة شراء تجهيزات" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().invNum}</label>
-              <input id="f-invoice" type="text" required placeholder="INV-2026-003" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-invoice" type="text" required placeholder="INV-2026-020" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().txType}</label>
               <select id="f-type" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none">
-                <option value="operational">${t().types.operational}</option>
-                <option value="sales">${t().types.sales}</option>
+                <option value="purchase_op">${t().types.purchase_op}</option>
+                <option value="sale">${t().types.sale}</option>
                 <option value="export">${t().types.export}</option>
                 <option value="personal">${t().types.personal}</option>
               </select>
@@ -561,16 +770,29 @@
               <label class="block text-xs font-bold mb-1">${t().taxRate}</label>
               <input id="f-tax-rate" type="number" step="0.01" min="0" required placeholder="19" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
-            <div class="flex items-end gap-2.5">
-              <button type="button" onclick="handleCalculate()" class="flex-1 rounded-xl border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2 text-sm font-extrabold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition">
+            <div>
+              <label class="block text-xs font-bold mb-1">${t().paymentMethod}</label>
+              <select id="f-payment" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none">
+                <option value="bank">${t().payments.bank}</option>
+                <option value="cash">${t().payments.cash}</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2 flex items-center">
+              <label class="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <input id="f-has-invoice" type="checkbox" checked class="h-4 w-4 rounded text-indigo-600" />
+                <span>${t().hasInvoiceLbl}</span>
+              </label>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button type="button" onclick="handleCalculate()" class="flex-1 rounded-xl border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2.5 text-sm font-extrabold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition">
                 ${t().calcBtn}
               </button>
-              <button type="submit" class="flex-1 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-extrabold text-white shadow hover:bg-indigo-700 transition">
+              <button type="submit" class="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-extrabold text-white shadow hover:bg-indigo-700 transition">
                 ${t().saveBtn}
               </button>
             </div>
           </form>
-          ${previewHtml}
+          ${previewBox}
         </section>
 
         <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -586,7 +808,8 @@
                   <th class="pb-3 px-2 text-start">${t().taxRate}</th>
                   <th class="pb-3 px-2 text-start">${t().taxVal}</th>
                   <th class="pb-3 px-2 text-start">${t().totalVal}</th>
-                  <th class="pb-3 px-2 text-start">${t().complianceStatus}</th>
+                  <th class="pb-3 px-2 text-start">${t().riskCol}</th>
+                  <th class="pb-3 px-2 text-start">${t().diagnosisCol}</th>
                   <th class="pb-3 px-2 text-start"></th>
                 </tr>
               </thead>
@@ -597,93 +820,36 @@
       `;
     }
 
-    function readFormValues() {
-      const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
-      const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
-      const type = document.getElementById('f-type')?.value || 'operational';
-      const rawBefore = document.getElementById('f-before-tax')?.value;
-      const rawRate = document.getElementById('f-tax-rate')?.value;
-      const calc = computeTax(rawBefore, rawRate);
-      const comp = evaluateCompliance(type, calc.rate);
-      return {
-        name,
-        invoice,
-        type,
-        beforeTax: calc.beforeTax,
-        rate: calc.rate,
-        taxAmount: calc.taxAmount,
-        totalAmount: calc.totalAmount,
-        comp
-      };
-    }
-
-    function handleCalculate() {
-      const vals = readFormValues();
-      state.previewCalc = vals;
-      logActivity(`${t().calcBtn}: ${vals.name}`);
-      renderPage();
-    }
-
-    function handleSaveTx(e) {
-      e.preventDefault();
-      const vals = readFormValues();
-      state.transactions.unshift({
-        id: Date.now(),
-        name: vals.name,
-        invoice: vals.invoice,
-        beforeTax: vals.beforeTax,
-        rate: vals.rate,
-        type: vals.type,
-        taxAmount: vals.taxAmount,
-        totalAmount: vals.totalAmount
-      });
-      state.previewCalc = vals;
-      logActivity(`${t().saveBtn}: ${vals.name} (${vals.invoice})`);
-      renderPage();
-    }
-
-    function deleteTx(id) {
-      state.transactions = state.transactions.filter(item => item.id !== id);
-      renderPage();
-    }
-
     function renderPage() {
       const container = document.getElementById('page-container');
-      let contextBanner = '';
+      let sectionNote = '';
 
       if (state.page === 'history') {
-        contextBanner = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2">
-            <h3 class="text-base font-bold">${t().labels.history}</h3>
-            <ul class="list-disc ps-5 space-y-1 text-sm text-slate-600 dark:text-slate-300">
-              ${state.activities.map(act => `<li>${act}</li>`).join('')}
+        sectionNote = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-1.5">
+            <h3 class="text-sm font-extrabold">${t().labels.history}</h3>
+            <ul class="list-disc ps-5 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+              ${state.activities.map(a => `<li>${a}</li>`).join('')}
             </ul>
           </section>
         `;
       } else if (state.page === 'regulations') {
-        contextBanner = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
-            <h3 class="text-base font-bold">${t().labels.regulations}</h3>
-            <p class="text-slate-600 dark:text-slate-300">TVA القياسية: 19% | المخفضة: 9% | التصدير المعفى: 0% | المصاريف الشخصية: غير قابلة للخصم.</p>
+        sectionNote = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
+            <strong class="text-slate-900 dark:text-white">${t().labels.regulations}:</strong>
+            TVA 19% / 9%، التصدير 0%، استبعاد المصاريف الشخصية أو الفواتير الناقصة أو الدفع النقدي فوق السقف المحدد من الخصم.
           </section>
         `;
       } else if (state.page === 'deadlines') {
-        contextBanner = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
-            <h3 class="text-base font-bold">${t().labels.deadlines}</h3>
-            <p class="text-slate-600 dark:text-slate-300">تصريح G50 الشهري: قبل اليوم 20 من كل شهر.</p>
-          </section>
-        `;
-      } else if (state.page === 'assistant') {
-        contextBanner = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
-            <h3 class="text-base font-bold">${t().labels.assistant}</h3>
-            <p class="text-slate-600 dark:text-slate-300">يقوم النظام بفحص كل معاملة تلقائياً للتحقق من مطابقة نسبة الضريبة ونوع المعاملة للقواعد الضريبية.</p>
+        sectionNote = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
+            <strong class="text-slate-900 dark:text-white">${t().labels.deadlines}:</strong>
+            التصريح الشهري للضرائب والرسوم (G50) يُقدّم قبل يوم 20 من الشهر الموالي لتفادي غرامات التأخير.
           </section>
         `;
       }
 
-      container.innerHTML = renderSummaryCards() + contextBanner + renderTransactionFormAndTable();
+      container.innerHTML = renderHome5AndProblemCard() + renderFiscalKPIs() + sectionNote + renderFormAndAuditTable();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
