@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaxGuard AI — Fiscal Compliance & Risk Audit</title>
+  <title>TaxGuard AI — Fiscal Audit & Risk Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -42,7 +42,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- Splash Screen -->
+  <!-- Animated Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white transition-opacity duration-500">
     <div class="shield-anim mb-5 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-cyan-500 shadow-2xl">
       <svg class="h-14 w-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -50,13 +50,13 @@
       </svg>
     </div>
     <h1 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-cyan-300 bg-clip-text text-transparent">TaxGuard AI</h1>
-    <p class="mt-2 text-xs text-slate-400">Fiscal Risk & Compliance Intelligence</p>
+    <p class="mt-2 text-xs text-slate-400">Fiscal Risk & Pre-Filing Audit Engine</p>
     <div class="mt-7 h-1.5 w-52 overflow-hidden rounded-full bg-slate-800">
       <div class="progress-anim h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400"></div>
     </div>
   </div>
 
-  <!-- Application Shell -->
+  <!-- Application Container -->
   <div id="app-root" class="hidden min-h-screen flex flex-col pb-24">
 
     <!-- Top Header -->
@@ -70,7 +70,7 @@
           </div>
           <div>
             <span class="text-base font-extrabold text-slate-900 dark:text-white">TaxGuard AI</span>
-            <p id="header-page-title" class="text-xs text-slate-500 dark:text-slate-400">لوحة القيادة</p>
+            <p id="header-page-title" class="text-xs text-slate-500 dark:text-slate-400">الرئيسية</p>
           </div>
         </button>
 
@@ -109,7 +109,7 @@
       </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Page Content -->
     <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 space-y-5"></main>
 
     <!-- 10-Icon Bottom Navigation Bar -->
@@ -119,7 +119,7 @@
   </div>
 
   <script>
-    const CASH_LIMIT_DZD = 100000; // Cash payment threshold for risk audit
+    const CASH_CEILING_DZD = 100000;
 
     const state = {
       lang: 'ar',
@@ -132,8 +132,8 @@
         {
           id: 1,
           name: 'فاتورة بيع خدمات استشارية',
-          invoice: 'INV-2026-011',
-          beforeTax: 120000,
+          invoice: 'INV-2026-101',
+          beforeTax: 140000,
           rate: 19,
           type: 'sale',
           payment: 'bank',
@@ -142,8 +142,8 @@
         {
           id: 2,
           name: 'شراء حواسيب مكتبية للنشاط',
-          invoice: 'INV-2026-012',
-          beforeTax: 80000,
+          invoice: 'INV-2026-102',
+          beforeTax: 90000,
           rate: 19,
           type: 'purchase_op',
           payment: 'bank',
@@ -151,28 +151,18 @@
         },
         {
           id: 3,
-          name: 'مصروف شخصي عائلي',
-          invoice: 'INV-2026-013',
-          beforeTax: 25000,
+          name: 'مصروف شخصي مدفوع نقداً',
+          invoice: 'INV-2026-103',
+          beforeTax: 120000,
           rate: 19,
           type: 'personal',
           payment: 'cash',
-          hasInvoice: true
-        },
-        {
-          id: 4,
-          name: 'تصدير برمجيات معفاة بنسبة 19%',
-          invoice: 'INV-2026-014',
-          beforeTax: 150000,
-          rate: 19,
-          type: 'export',
-          payment: 'bank',
-          hasInvoice: true
+          hasInvoice: false
         }
       ],
       activities: [
-        'تشغيل محرك فحص المخاطر الجبائية وتسوية G50',
-        'مراجعة الفواتير والعمليات غير المتوافقة'
+        'فحص المعاملات مقابل قواعد الامتثال الجبائي',
+        'تحديد المصاريف المعرضة لرفض الخصم أو الغرامات'
       ]
     };
 
@@ -214,42 +204,42 @@
       ar: {
         dir: 'rtl',
         homeTitle: 'الخدمات الأساسية الخمس',
-        homeSub: 'مراقبة الامتثال الجبائي واكتشاف الأخطاء قبل التصريح — بدون تسجيل دخول.',
-        problemBannerTitle: 'المشكلة التي يعالجها TaxGuard AI',
-        problemBannerDesc: 'الاعتماد على آلة حاسبة تقليدية قد يؤدي إلى خصم مصاريف غير مؤهلة أو تطبيق نسبة TVA خاطئة أو تجاوز سقف الدفع نقداً مما يسبب غرامات عند التدقيق الجبائي. يقوم النظام بتشخيص كل معاملة واحتساب صافي التصريح بدقة.',
+        homeSub: 'محرك تدقيق جبائي لكشف المخاطر والمصاريف غير القابلة للخصم قبل التصريح.',
+        auditObjectiveTitle: 'ما الذي يفعله التطبيق ولا تفعله الآلة الحاسبة؟',
+        auditObjectiveDesc: 'يفحص كل معاملة ضد قواعد الامتثال الجبائي: يكشف المصاريف الشخصية أو الفواتير غير المكتملة أو تجاوز السقف النقدي أو نسب الضريبة غير المطابقة، ويحسب حجم الخصم المستبعد والمخاطر المحتملة قبل التصريح.',
         txName: 'اسم المعاملة',
         invNum: 'رقم الفاتورة',
         beforeTax: 'المبلغ قبل الضريبة',
         taxRate: 'نسبة الضريبة (%)',
         txType: 'نوع المعاملة',
         paymentMethod: 'طريقة الدفع',
-        hasInvoiceLbl: 'تتوفر فاتورة رسمية مكتملة البيانات',
+        hasInvoiceLbl: 'تتوفر فاتورة رسمية مستوفاة الشروط',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'سجل التدقيق والامتثال الجبائي بعد الحفظ',
+        resultsTableTitle: 'تقرير التدقيق والامتثال للمعاملات المحفوظة',
         taxVal: 'قيمة الضريبة',
         totalVal: 'المجموع بعد الضريبة',
-        deductibleTaxVal: 'TVA القابلة للخصم',
-        diagnosisCol: 'التشخيص الجبائي والقرار',
-        riskCol: 'مستوى الخطر',
-        vatCollected: 'TVA المحصّلة (المبيعات)',
-        vatRecoverable: 'TVA القابلة للاسترجاع',
-        netPayable: 'صافي الضريبة المستحقة (G50)',
-        riskExposure: 'مخاطر / غرامات محتملة',
+        disallowedVal: 'مبلغ معرض للاستبعاد/الخطر',
+        riskCol: 'درجة المخاطرة',
+        findingCol: 'التشخيص والخطوة التصحيحية',
+        compliantCountLbl: 'معاملات متوافقة',
+        flaggedCountLbl: 'معاملات عليها تنبيه/مخالفة',
+        disallowedTotalLbl: 'إجمالي المبالغ المعرضة للخطر',
+        compliantRateLbl: 'مؤشر الامتثال',
         types: {
           sale: 'مبيعات خاضعة للضريبة',
-          purchase_op: 'مشتريات تشغيلية مؤهلة للخصم',
-          export: 'تصدير معفى من الضريبة (0%)',
+          purchase_op: 'مشتريات تشغيلية قابلة للخصم',
+          export: 'تصدير معفى (0%)',
           personal: 'مصروف شخصي (غير قابل للخصم)'
         },
         payments: {
           bank: 'تحويل بنكي / شيك',
-          cash: 'دفع نقدي (Espèces)'
+          cash: 'دفع نقدي'
         },
         risks: {
-          low: 'منخفض (آمن)',
-          medium: 'متوسط (تنبيه)',
-          high: 'مرتفع (مخالفة)'
+          low: 'منخفضة (آمن)',
+          medium: 'متوسطة (تنبيه)',
+          high: 'مرتفعة (مخالفة)'
         },
         labels: {
           dashboard: 'الرئيسية',
@@ -275,28 +265,28 @@
       en: {
         dir: 'ltr',
         homeTitle: 'Five Core Services',
-        homeSub: 'Fiscal compliance monitoring & pre-filing risk audit — no authentication required.',
-        problemBannerTitle: 'Problem Solved by TaxGuard AI',
-        problemBannerDesc: 'Relying on a plain calculator risks deducting non-eligible expenses, applying wrong VAT rates, or breaching cash thresholds—causing tax audit penalties. TaxGuard AI audits each entry and computes net tax liability.',
+        homeSub: 'Pre-filing fiscal risk audit engine for non-deductible expenses and rule anomalies.',
+        auditObjectiveTitle: 'Why a Risk Audit Engine Instead of a Plain Calculator?',
+        auditObjectiveDesc: 'Evaluates each entry against compliance rules: flags personal expenses, missing invoices, cash-ceiling breaches, and mismatched VAT rates, showing at-risk amounts and corrective actions.',
         txName: 'Transaction Name',
         invNum: 'Invoice Number',
         beforeTax: 'Amount Before Tax',
         taxRate: 'Tax Rate (%)',
         txType: 'Transaction Type',
         paymentMethod: 'Payment Method',
-        hasInvoiceLbl: 'Valid official tax invoice attached',
+        hasInvoiceLbl: 'Complete official tax invoice attached',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'Saved Fiscal Audit & Compliance Table',
+        resultsTableTitle: 'Saved Transactions Fiscal Audit Log',
         taxVal: 'Tax Amount',
         totalVal: 'Total After Tax',
-        deductibleTaxVal: 'Deductible VAT',
-        diagnosisCol: 'Audit Diagnosis & Action',
+        disallowedVal: 'At-Risk Amount',
         riskCol: 'Risk Level',
-        vatCollected: 'Collected VAT (Sales)',
-        vatRecoverable: 'Recoverable VAT',
-        netPayable: 'Net Tax Payable',
-        riskExposure: 'Potential Penalty Exposure',
+        findingCol: 'Audit Finding & Action',
+        compliantCountLbl: 'Compliant Entries',
+        flaggedCountLbl: 'Flagged Entries',
+        disallowedTotalLbl: 'Total At-Risk Exposure',
+        compliantRateLbl: 'Compliance Index',
         types: {
           sale: 'Taxable Sales',
           purchase_op: 'Deductible Operational Expense',
@@ -336,9 +326,9 @@
       fr: {
         dir: 'ltr',
         homeTitle: 'Cinq Services Principaux',
-        homeSub: 'Suivi de conformité fiscale et audit des risques — sans authentification.',
-        problemBannerTitle: 'Problème Résolu par TaxGuard AI',
-        problemBannerDesc: 'Une simple calculatrice n’empêche ni la déduction de charges non éligibles, ni un mauvais taux de TVA, ni le dépassement du seuil en espèces. TaxGuard AI audite chaque opération et calcule la TVA nette.',
+        homeSub: 'Moteur d’audit fiscal pré-déclaration pour charges non déductibles et anomalies.',
+        auditObjectiveTitle: 'Valeur Ajoutée face à une Calculatrice Classique',
+        auditObjectiveDesc: 'Vérifie chaque opération selon des règles de conformité : détecte les dépenses personnelles, factures incomplètes, dépassements en espèces et taux de TVA atypiques.',
         txName: 'Nom de la transaction',
         invNum: 'Numéro de facture',
         beforeTax: 'Montant hors taxe',
@@ -348,16 +338,16 @@
         hasInvoiceLbl: 'Facture fiscale officielle complète disponible',
         calcBtn: 'Calculate',
         saveBtn: 'Save Transaction',
-        resultsTableTitle: 'Tableau d’Audit Fiscal et Conformité',
+        resultsTableTitle: 'Journal d’Audit et de Conformité Fiscale',
         taxVal: 'Montant de la taxe',
         totalVal: 'Total TTC',
-        deductibleTaxVal: 'TVA Déductible',
-        diagnosisCol: 'Diagnostic & Recommandation',
+        disallowedVal: 'Montant à Risque',
         riskCol: 'Niveau de Risque',
-        vatCollected: 'TVA Collectée (Ventes)',
-        vatRecoverable: 'TVA Récupérable',
-        netPayable: 'TVA Nette à Payer',
-        riskExposure: 'Risque de Pénalité Estimé',
+        findingCol: 'Diagnostic & Action',
+        compliantCountLbl: 'Opérations Conformes',
+        flaggedCountLbl: 'Opérations Signalées',
+        disallowedTotalLbl: 'Exposition Totale au Risque',
+        compliantRateLbl: 'Indice de Conformité',
         types: {
           sale: 'Ventes taxables',
           purchase_op: 'Charge opérationnelle déductible',
@@ -404,80 +394,60 @@
       return dict[state.lang];
     }
 
-    function logActivity(msg) {
-      state.activities.unshift(msg);
+    function logActivity(text) {
+      state.activities.unshift(text);
       if (state.activities.length > 20) state.activities.pop();
     }
 
-    // Core fiscal audit engine (solves tax risk & deduction errors beyond plain arithmetic)
-    function auditTransaction(item) {
+    function evaluateAudit(item) {
       const beforeTax = Math.max(0, Number(item.beforeTax) || 0);
       const rate = Math.max(0, Number(item.rate) || 0);
       const taxAmount = round2((beforeTax * rate) / 100);
       const totalAmount = round2(beforeTax + taxAmount);
 
       let risk = 'low';
-      let deductibleTax = 0;
-      let penaltyExposure = 0;
-      let diagnosis = '';
+      let atRiskAmount = 0;
+      let finding = '';
 
       if (!item.hasInvoice) {
         risk = 'high';
-        deductibleTax = 0;
-        penaltyExposure = round2(Math.max(taxAmount, beforeTax * 0.1));
-        diagnosis = state.lang === 'ar'
-          ? 'رفض الخصم: غياب الفاتورة الرسمية يعرّض العملية لعدم الاعتراف الجبائي وغرامة.'
-          : 'Deduction rejected: missing official tax invoice creates audit disallowance risk.';
+        atRiskAmount = totalAmount;
+        finding = state.lang === 'ar'
+          ? 'خطر استبعاد: غياب الفاتورة الرسمية يعرّض العملية لرفض الاعتراف الضريبي. أرفق فاتورة مستوفاة.'
+          : 'Disallowal risk: missing official invoice can invalidate deduction. Attach complete invoice.';
       } else if (item.type === 'personal') {
         risk = 'high';
-        deductibleTax = 0;
-        penaltyExposure = round2(taxAmount * 0.5);
-        diagnosis = state.lang === 'ar'
-          ? 'مخالفة قاعدة الخصم: المصاريف الشخصية غير قابلة لاسترجاع TVA أو الخصم الضريبي.'
-          : 'Rule violation: personal expenses are non-deductible for tax or VAT recovery.';
+        atRiskAmount = totalAmount;
+        finding = state.lang === 'ar'
+          ? 'مخالفة عدم القابلية للخصم: المصاريف الشخصية تُستبعد من الخصم الضريبي. افصلها عن حسابات النشاط.'
+          : 'Non-deductible expense: personal items must be excluded from business deductions.';
+      } else if (item.payment === 'cash' && totalAmount > CASH_CEILING_DZD) {
+        risk = 'high';
+        atRiskAmount = totalAmount;
+        finding = state.lang === 'ar'
+          ? 'تجاوز سقف الدفع النقدي: المبلغ النقدي يفوق العتبة المحددة. يُنصح بالاعتماد على التحويل البنكي.'
+          : 'Cash limit breach: cash payment exceeds threshold. Use bank transfer where required.';
       } else if (item.type === 'export' && rate > 0) {
         risk = 'medium';
-        deductibleTax = 0;
-        penaltyExposure = round2(taxAmount);
-        diagnosis = state.lang === 'ar'
-          ? 'تنبيه نسبة التصدير: التصدير معفى (0%)؛ احتساب ضريبة 19% قد يربك الإقرار.'
-          : 'Export rate warning: exports are typically 0%; charging VAT may distort filing.';
+        atRiskAmount = taxAmount;
+        finding = state.lang === 'ar'
+          ? 'تنبيه نسبة التصدير: التصدير غالباً معفى (0%). تحقق من أهلية الإعفاء قبل التصريح.'
+          : 'Export rate warning: exports are commonly 0%. Verify exemption criteria before filing.';
       } else if ((item.type === 'sale' || item.type === 'purchase_op') && rate !== 19 && rate !== 9) {
         risk = 'medium';
-        deductibleTax = item.type === 'purchase_op' ? taxAmount : 0;
-        penaltyExposure = round2(beforeTax * 0.05);
-        diagnosis = state.lang === 'ar'
-          ? 'تنبيه نسبة TVA: النسبة المدخلة تختلف عن النسب القياسية (19% أو 9%)؛ يُنصح بالمراجعة.'
-          : 'VAT rate alert: rate differs from standard 19% / 9% benchmarks; review recommended.';
-      } else if (item.payment === 'cash' && totalAmount > CASH_LIMIT_DZD) {
-        risk = 'high';
-        deductibleTax = 0;
-        penaltyExposure = round2(totalAmount * 0.1);
-        diagnosis = state.lang === 'ar'
-          ? 'تجاوز سقف الدفع نقداً: المبلغ النقدي يفوق الحد المسموح وقد يُستبعد من الخصم.'
-          : 'Cash threshold exceeded: cash settlement above limit risks deduction exclusion.';
+        atRiskAmount = taxAmount;
+        finding = state.lang === 'ar'
+          ? 'نسبة ضريبة غير قياسية: النسبة تختلف عن 19% و9%. راجع التصنيف الجبائي للسلعة أو الخدمة.'
+          : 'Non-standard rate: rate differs from 19% / 9%. Confirm applicable tax schedule.';
       } else {
         risk = 'low';
-        deductibleTax = item.type === 'purchase_op' ? taxAmount : 0;
-        penaltyExposure = 0;
-        diagnosis = state.lang === 'ar'
-          ? 'متوافق جبائياً: شروط الفاتورة ونوع العملية ونسبة الضريبة مطابقة للقواعد.'
-          : 'Compliant: invoice, transaction type, and tax rate align with active rules.';
+        atRiskAmount = 0;
+        finding = state.lang === 'ar'
+          ? 'متوافق مع قواعد الفحص: البيانات والفاتورة ونوع العملية متسقة.'
+          : 'Audit check passed: transaction type, invoice, and rate are consistent.';
       }
 
-      const collectedTax = item.type === 'sale' ? taxAmount : 0;
-
-      return {
-        beforeTax: round2(beforeTax),
-        rate: round2(rate),
-        taxAmount,
-        totalAmount,
-        deductibleTax,
-        collectedTax,
-        penaltyExposure,
-        risk,
-        diagnosis
-      };
+      return { beforeTax: round2(beforeTax), rate: round2(rate), taxAmount, totalAmount, atRiskAmount, risk, finding };
     }
 
     function toggleMenu(e) {
@@ -574,14 +544,12 @@
       }).join('');
     }
 
-    function renderHome5AndProblemCard() {
+    function renderHome5AndAuditCard() {
       return `
         <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
-            </div>
+          <div>
+            <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -603,50 +571,51 @@
           </div>
 
           <div class="rounded-xl border border-indigo-200/80 dark:border-indigo-800/60 bg-indigo-50/60 dark:bg-indigo-950/30 p-3.5">
-            <p class="text-xs font-extrabold text-indigo-700 dark:text-indigo-300">${t().problemBannerTitle}</p>
-            <p class="mt-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300">${t().problemBannerDesc}</p>
+            <p class="text-xs font-extrabold text-indigo-700 dark:text-indigo-300">${t().auditObjectiveTitle}</p>
+            <p class="mt-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300">${t().auditObjectiveDesc}</p>
           </div>
         </section>
       `;
     }
 
-    function renderFiscalKPIs() {
-      let collectedSum = 0;
-      let deductibleSum = 0;
-      let penaltySum = 0;
+    function renderAuditKPIs() {
+      let compliantCount = 0;
+      let flaggedCount = 0;
+      let atRiskSum = 0;
 
       state.records.forEach((rec) => {
-        const res = auditTransaction(rec);
-        collectedSum = round2(collectedSum + res.collectedTax);
-        deductibleSum = round2(deductibleSum + res.deductibleTax);
-        penaltySum = round2(penaltySum + res.penaltyExposure);
+        const res = evaluateAudit(rec);
+        if (res.risk === 'low') compliantCount++;
+        else flaggedCount++;
+        atRiskSum = round2(atRiskSum + res.atRiskAmount);
       });
 
-      const netTax = round2(collectedSum - deductibleSum);
+      const total = state.records.length;
+      const indexPct = total ? Math.round((compliantCount / total) * 100) : 100;
 
       return `
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">${t().vatCollected}</p>
-            <p class="mt-1.5 font-mono text-lg font-extrabold">${t().money(collectedSum)}</p>
-          </div>
           <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">${t().vatRecoverable}</p>
-            <p class="mt-1.5 font-mono text-lg font-extrabold text-emerald-600 dark:text-emerald-400">${t().money(deductibleSum)}</p>
+            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">${t().compliantCountLbl}</p>
+            <p class="mt-1.5 text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">${compliantCount}</p>
           </div>
-          <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${t().netPayable}</p>
-            <p class="mt-1.5 font-mono text-lg font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(netTax)}</p>
+          <div class="rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-amber-600 dark:text-amber-400">${t().flaggedCountLbl}</p>
+            <p class="mt-1.5 text-2xl font-extrabold text-amber-600 dark:text-amber-400">${flaggedCount}</p>
           </div>
           <div class="rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <p class="text-xs font-semibold text-rose-600 dark:text-rose-400">${t().riskExposure}</p>
-            <p class="mt-1.5 font-mono text-lg font-extrabold text-rose-600 dark:text-rose-400">${t().money(penaltySum)}</p>
+            <p class="text-xs font-semibold text-rose-600 dark:text-rose-400">${t().disallowedTotalLbl}</p>
+            <p class="mt-1.5 font-mono text-lg font-extrabold text-rose-600 dark:text-rose-400">${t().money(atRiskSum)}</p>
+          </div>
+          <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${t().compliantRateLbl}</p>
+            <p class="mt-1.5 text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">${indexPct}%</p>
           </div>
         </section>
       `;
     }
 
-    function readFormInput() {
+    function readFormValues() {
       const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
       const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
       const type = document.getElementById('f-type')?.value || 'purchase_op';
@@ -656,19 +625,19 @@
       const hasInvoice = Boolean(document.getElementById('f-has-invoice')?.checked);
 
       const raw = { name, invoice, type, payment, beforeTax, rate, hasInvoice };
-      const audit = auditTransaction(raw);
+      const audit = evaluateAudit(raw);
       return { ...raw, audit };
     }
 
     function handleCalculate() {
-      state.lastAudit = readFormInput();
+      state.lastAudit = readFormValues();
       logActivity(`${t().calcBtn}: ${state.lastAudit.name}`);
       renderPage();
     }
 
     function handleSaveTransaction(e) {
       e.preventDefault();
-      const entry = readFormInput();
+      const entry = readFormValues();
       state.records.unshift({
         id: Date.now(),
         name: entry.name,
@@ -690,13 +659,13 @@
     }
 
     function renderFormAndAuditTable() {
-      const riskBadgeMap = {
+      const badgeStyles = {
         low: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
         medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
         high: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
       };
 
-      const previewBox = state.lastAudit ? `
+      const previewHtml = state.lastAudit ? `
         <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-4 space-y-2 text-sm">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
@@ -708,20 +677,20 @@
               <p class="font-mono font-extrabold">${t().money(state.lastAudit.audit.totalAmount)}</p>
             </div>
             <div>
-              <span class="text-xs text-slate-500">${t().deductibleTaxVal}:</span>
-              <p class="font-mono font-bold text-emerald-600">${t().money(state.lastAudit.audit.deductibleTax)}</p>
+              <span class="text-xs text-slate-500">${t().disallowedVal}:</span>
+              <p class="font-mono font-extrabold text-rose-600 dark:text-rose-400">${t().money(state.lastAudit.audit.atRiskAmount)}</p>
             </div>
             <div>
               <span class="text-xs text-slate-500">${t().riskCol}:</span>
               <p class="font-bold">${t().risks[state.lastAudit.audit.risk]}</p>
             </div>
           </div>
-          <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 pt-1">${state.lastAudit.audit.diagnosis}</p>
+          <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 pt-1">${state.lastAudit.audit.finding}</p>
         </div>
       ` : '';
 
       const rowsHtml = state.records.map((rec) => {
-        const a = auditTransaction(rec);
+        const a = evaluateAudit(rec);
         return `
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
             <td class="py-3 px-2 font-bold">${rec.name}</td>
@@ -732,9 +701,9 @@
             <td class="py-3 px-2 font-mono text-indigo-600 dark:text-indigo-400">${t().money(a.taxAmount)}</td>
             <td class="py-3 px-2 font-mono font-bold">${t().money(a.totalAmount)}</td>
             <td class="py-3 px-2">
-              <span class="rounded-full px-2.5 py-1 text-xs font-bold ${riskBadgeMap[a.risk]}">${t().risks[a.risk]}</span>
+              <span class="rounded-full px-2.5 py-1 text-xs font-bold ${badgeStyles[a.risk]}">${t().risks[a.risk]}</span>
             </td>
-            <td class="py-3 px-2 text-xs max-w-xs text-slate-600 dark:text-slate-300">${a.diagnosis}</td>
+            <td class="py-3 px-2 text-xs max-w-xs text-slate-600 dark:text-slate-300">${a.finding}</td>
             <td class="py-3 px-2">
               <button onclick="deleteRecord(${rec.id})" class="rounded-lg bg-rose-50 dark:bg-rose-950/50 px-2.5 py-1 text-xs font-bold text-rose-600 hover:bg-rose-100">×</button>
             </td>
@@ -747,11 +716,11 @@
           <form onsubmit="handleSaveTransaction(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label class="block text-xs font-bold mb-1">${t().txName}</label>
-              <input id="f-name" type="text" required placeholder="مثال: فاتورة شراء تجهيزات" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-name" type="text" required placeholder="مثال: شراء معدات" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().invNum}</label>
-              <input id="f-invoice" type="text" required placeholder="INV-2026-020" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-invoice" type="text" required placeholder="INV-2026-105" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().txType}</label>
@@ -792,7 +761,7 @@
               </button>
             </div>
           </form>
-          ${previewBox}
+          ${previewHtml}
         </section>
 
         <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -809,7 +778,7 @@
                   <th class="pb-3 px-2 text-start">${t().taxVal}</th>
                   <th class="pb-3 px-2 text-start">${t().totalVal}</th>
                   <th class="pb-3 px-2 text-start">${t().riskCol}</th>
-                  <th class="pb-3 px-2 text-start">${t().diagnosisCol}</th>
+                  <th class="pb-3 px-2 text-start">${t().findingCol}</th>
                   <th class="pb-3 px-2 text-start"></th>
                 </tr>
               </thead>
@@ -837,19 +806,19 @@
         sectionNote = `
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
             <strong class="text-slate-900 dark:text-white">${t().labels.regulations}:</strong>
-            TVA 19% / 9%، التصدير 0%، استبعاد المصاريف الشخصية أو الفواتير الناقصة أو الدفع النقدي فوق السقف المحدد من الخصم.
+            فحص الفاتورة الرسمية، عدم قابلية خصم المصاريف الشخصية، مراقبة سقف الدفع النقدي، ومطابقة النسب الضريبية.
           </section>
         `;
       } else if (state.page === 'deadlines') {
         sectionNote = `
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 text-xs text-slate-600 dark:text-slate-300">
             <strong class="text-slate-900 dark:text-white">${t().labels.deadlines}:</strong>
-            التصريح الشهري للضرائب والرسوم (G50) يُقدّم قبل يوم 20 من الشهر الموالي لتفادي غرامات التأخير.
+            مراجعة المعاملات وتصفية المخاطر قبل موعد الإقرار الشهري (قبل يوم 20 من الشهر).
           </section>
         `;
       }
 
-      container.innerHTML = renderHome5AndProblemCard() + renderFiscalKPIs() + sectionNote + renderFormAndAuditTable();
+      container.innerHTML = renderHome5AndAuditCard() + renderAuditKPIs() + sectionNote + renderFormAndAuditTable();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
