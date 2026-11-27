@@ -42,7 +42,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- Splash Screen -->
+  <!-- Animated Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white transition-opacity duration-500">
     <div class="shield-anim mb-5 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-cyan-500 shadow-2xl">
       <svg class="h-14 w-14 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -56,10 +56,10 @@
     </div>
   </div>
 
-  <!-- Main App -->
+  <!-- Application Container -->
   <div id="app-root" class="hidden min-h-screen flex flex-col pb-24">
 
-    <!-- Top Header -->
+    <!-- Clean Top Header -->
     <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <button onclick="navigateTo('dashboard')" class="flex items-center gap-3 text-start">
@@ -112,14 +112,65 @@
     <!-- Main Page Content -->
     <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 space-y-5"></main>
 
-    <!-- 10-Icon Bottom Navigation Bar -->
+    <!-- 12-Icon Bottom Navigation Bar -->
     <nav class="fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-      <div id="bottom-nav-10" class="mx-auto flex max-w-6xl items-center justify-between gap-1 overflow-x-auto no-scrollbar px-2 py-2"></div>
+      <div id="bottom-nav-12" class="mx-auto flex max-w-6xl items-center justify-between gap-1 overflow-x-auto no-scrollbar px-2 py-2"></div>
     </nav>
   </div>
 
   <script>
     const CASH_CEILING_DZD = 100000;
+    const STORAGE_KEY = 'taxguard_ai_audit_records_v1';
+
+    const defaultRecords = [
+      {
+        id: 1,
+        name: 'فاتورة بيع خدمات استشارية',
+        invoice: 'INV-2026-101',
+        beforeTax: 140000,
+        rate: 19,
+        type: 'sale',
+        payment: 'bank',
+        hasInvoice: true
+      },
+      {
+        id: 2,
+        name: 'شراء حواسيب مكتبية للنشاط',
+        invoice: 'INV-2026-102',
+        beforeTax: 90000,
+        rate: 19,
+        type: 'purchase_op',
+        payment: 'bank',
+        hasInvoice: true
+      },
+      {
+        id: 3,
+        name: 'مصروف شخصي مدفوع نقداً',
+        invoice: 'INV-2026-103',
+        beforeTax: 120000,
+        rate: 19,
+        type: 'personal',
+        payment: 'cash',
+        hasInvoice: false
+      }
+    ];
+
+    function loadSavedRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [...defaultRecords];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) && parsed.length ? parsed : [...defaultRecords];
+      } catch (_) {
+        return [...defaultRecords];
+      }
+    }
+
+    function persistRecords() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records));
+      } catch (_) {}
+    }
 
     const state = {
       lang: 'ar',
@@ -128,54 +179,35 @@
       page: 'dashboard',
       menuOpen: false,
       lastAudit: null,
-      records: [
-        {
-          id: 1,
-          name: 'فاتورة بيع خدمات استشارية',
-          invoice: 'INV-2026-101',
-          beforeTax: 140000,
-          rate: 19,
-          type: 'sale',
-          payment: 'bank',
-          hasInvoice: true
-        },
-        {
-          id: 2,
-          name: 'شراء حواسيب مكتبية للنشاط',
-          invoice: 'INV-2026-102',
-          beforeTax: 90000,
-          rate: 19,
-          type: 'purchase_op',
-          payment: 'bank',
-          hasInvoice: true
-        },
-        {
-          id: 3,
-          name: 'مصروف شخصي مدفوع نقداً',
-          invoice: 'INV-2026-103',
-          beforeTax: 120000,
-          rate: 19,
-          type: 'personal',
-          payment: 'cash',
-          hasInvoice: false
-        }
-      ],
+      aiQuestion: '',
+      aiReply: '',
+      records: loadSavedRecords(),
       activities: [
-        'فحص المعاملات مقابل قواعد الامتثال الجبائي',
-        'تحديد المصاريف المعرضة لرفض الخصم أو المخاطر'
+        'محرك التدقيق الجبائي جاهز لكشف المخاطر قبل التصريح',
+        'حفظ الملفات وتنزيل التقارير مفعل'
       ]
     };
 
     const rates = { DZD: 1, USD: 1 / 134.5, EUR: 0.92 / 134.5, SAR: 3.75 / 134.5 };
     const symbols = { DZD: 'د.ج ', USD: '$', EUR: '€', SAR: 'ر.س ' };
 
-    const main5Keys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
-    const bottom10Keys = [
-      'dashboard', 'transactions', 'invoices', 'calculator', 'assistant',
-      'compliance', 'reports', 'regulations', 'deadlines', 'settings'
+    const bottom12Keys = [
+      'dashboard',
+      'transactions',
+      'invoices',
+      'calculator',
+      'assistant',
+      'files',
+      'compliance',
+      'reports',
+      'regulations',
+      'deadlines',
+      'history',
+      'settings'
     ];
+
     const menuExtraKeys = [
-      'compliance', 'regulations', 'deadlines', 'reports',
+      'files', 'compliance', 'regulations', 'deadlines', 'reports',
       'notifications', 'currency', 'history', 'language',
       'theme', 'settings', 'help', 'about'
     ];
@@ -186,14 +218,15 @@
       invoices: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
       calculator: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>',
       assistant: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+      files: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>',
       compliance: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       reports: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
       regulations: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
       deadlines: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+      history: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       settings: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
       notifications: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>',
       currency: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      history: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       language: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>',
       theme: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>',
       help: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
@@ -203,10 +236,6 @@
     const dict = {
       ar: {
         dir: 'rtl',
-        homeTitle: 'الخدمات الأساسية الخمس',
-        homeSub: 'محرك تدقيق جبائي لكشف المخاطر والمصاريف غير القابلة للخصم قبل التصريح.',
-        auditObjectiveTitle: 'ما الذي يفعله التطبيق ولا تفعله الآلة الحاسبة؟',
-        auditObjectiveDesc: 'يفحص كل معاملة ضد قواعد الامتثال الجبائي: يكشف المصاريف الشخصية أو الفواتير غير المكتملة أو تجاوز السقف النقدي أو نسب الضريبة غير المطابقة، ويحسب حجم الخصم المستبعد والمخاطر المحتملة قبل التصريح.',
         txName: 'اسم المعاملة',
         invNum: 'رقم الفاتورة',
         beforeTax: 'المبلغ قبل الضريبة',
@@ -226,6 +255,16 @@
         flaggedCountLbl: 'معاملات عليها تنبيه/مخالفة',
         disallowedTotalLbl: 'إجمالي المبالغ المعرضة للخطر',
         compliantRateLbl: 'مؤشر الامتثال',
+        filesTitle: 'حفظ الملفات وتنزيل التقارير',
+        filesDesc: 'البيانات تُحفظ تلقائياً في المتصفح، ويمكنكِ تنزيل ملف CSV أو ملف تقرير نصي/JSON لحفظه على جهازكِ أو رفعه لاحقاً.',
+        downloadCsvBtn: 'تنزيل ملف CSV',
+        downloadReportBtn: 'تنزيل تقرير التدقيق (TXT)',
+        uploadJsonLbl: 'استعادة ملف محفوظ (JSON)',
+        resetDemoBtn: 'استعادة البيانات الافتراضية',
+        aiTitle: 'المساعد الذكي للتدقيق الجبائي',
+        aiDesc: 'اسألي المساعد عن أي مخالفة أو مصروف أو قاعدة خصم وسيفحص سجل معاملاتكِ الحالية فوراً.',
+        aiPlaceholder: 'مثال: لماذا ظهرت مخالفة؟ أو ما هي المصاريف غير القابلة للخصم؟',
+        aiAskBtn: 'تحليل ذكي',
         types: {
           sale: 'مبيعات خاضعة للضريبة',
           purchase_op: 'مشتريات تشغيلية قابلة للخصم',
@@ -247,38 +286,24 @@
           invoices: 'الفواتير',
           calculator: 'الحاسبة',
           assistant: 'المساعد',
+          files: 'الملفات',
           compliance: 'الامتثال',
           reports: 'التقارير',
           regulations: 'اللوائح',
           deadlines: 'المواعيد',
+          history: 'السجل',
           settings: 'الإعدادات',
           notifications: 'الإشعارات',
           currency: 'العملات',
-          history: 'السجل',
           language: 'اللغة',
           theme: 'المظهر',
           help: 'المساعدة',
           about: 'حول التطبيق'
         },
-        sectionDetails: {
-          transactions: 'عرض وفحص جميع المعاملات المسجلة ومستوى خطورة كل عملية.',
-          invoices: 'مراجعة أرقام الفواتير والتحقق من توفر الفواتير الرسمية المستوفاة.',
-          calculator: 'محاكاة الحساب وفحص أثر نسبة الضريبة ونوع العملية قبل الحفظ.',
-          assistant: 'مساعد التدقيق الذكي: يوضح سبب كل تنبيه أو مخالفة وكيفية معالجتها.',
-          compliance: 'فاحص الامتثال الجبائي: يفرز العمليات المتوافقة عن العمليات المعرضة للاستبعاد.',
-          reports: 'ملخص المؤشرات والتقارير التحليلية لحالة الامتثال والمخاطر.',
-          regulations: 'القواعد والضوابط المرجعية المطبقة في الفحص (فواتير، خصم، سقف نقدي، نسب).',
-          deadlines: 'متابعة المواعيد الضريبية ومراجعة الملفات قبل موعد التصريح.',
-          settings: 'تخصيص تفضيلات اللغة والعملة والمظهر للتطبيق.'
-        },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       en: {
         dir: 'ltr',
-        homeTitle: 'Five Core Services',
-        homeSub: 'Pre-filing fiscal risk audit engine for non-deductible expenses and rule anomalies.',
-        auditObjectiveTitle: 'Why a Risk Audit Engine Instead of a Plain Calculator?',
-        auditObjectiveDesc: 'Evaluates each entry against compliance rules: flags personal expenses, missing invoices, cash-ceiling breaches, and mismatched VAT rates, showing at-risk amounts and corrective actions.',
         txName: 'Transaction Name',
         invNum: 'Invoice Number',
         beforeTax: 'Amount Before Tax',
@@ -298,6 +323,16 @@
         flaggedCountLbl: 'Flagged Entries',
         disallowedTotalLbl: 'Total At-Risk Exposure',
         compliantRateLbl: 'Compliance Index',
+        filesTitle: 'File Saving & Report Downloads',
+        filesDesc: 'Records auto-save locally; download a CSV spreadsheet or TXT audit report, or restore a saved JSON file.',
+        downloadCsvBtn: 'Download CSV',
+        downloadReportBtn: 'Download Audit Report (TXT)',
+        uploadJsonLbl: 'Restore Saved File (JSON)',
+        resetDemoBtn: 'Reset Sample Data',
+        aiTitle: 'AI Fiscal Audit Assistant',
+        aiDesc: 'Ask about flagged items, non-deductible expenses, or cash limits based on your current records.',
+        aiPlaceholder: 'e.g., Why is a transaction flagged? Or how to fix non-deductible expenses?',
+        aiAskBtn: 'Analyze',
         types: {
           sale: 'Taxable Sales',
           purchase_op: 'Deductible Operational Expense',
@@ -318,39 +353,25 @@
           transactions: 'Transactions',
           invoices: 'Invoices',
           calculator: 'Calculator',
-          assistant: 'Assistant',
+          assistant: 'AI Assistant',
+          files: 'Files',
           compliance: 'Compliance',
           reports: 'Reports',
           regulations: 'Regulations',
           deadlines: 'Deadlines',
+          history: 'History',
           settings: 'Settings',
           notifications: 'Notifications',
           currency: 'Currency',
-          history: 'History',
           language: 'Language',
           theme: 'Theme',
           help: 'Help',
           about: 'About'
         },
-        sectionDetails: {
-          transactions: 'Inspect logged transactions and their pre-filing risk classifications.',
-          invoices: 'Review invoice numbers and official invoice verification status.',
-          calculator: 'Simulate tax calculations and rule checks prior to saving.',
-          assistant: 'Smart Audit Assistant: explains risk triggers and recommended corrections.',
-          compliance: 'Compliance Checker: separates compliant entries from at-risk deductions.',
-          reports: 'Analytical summary of compliance rate and risk exposure.',
-          regulations: 'Active rule criteria applied during pre-filing audit.',
-          deadlines: 'Pre-filing review checkpoints and tax calendar reminders.',
-          settings: 'Configure language, currency, and appearance options.'
-        },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       },
       fr: {
         dir: 'ltr',
-        homeTitle: 'Cinq Services Principaux',
-        homeSub: 'Moteur d’audit fiscal pré-déclaration pour charges non déductibles et anomalies.',
-        auditObjectiveTitle: 'Valeur Ajoutée face à une Calculatrice Classique',
-        auditObjectiveDesc: 'Vérifie chaque opération selon des règles de conformité : détecte les dépenses personnelles, factures incomplètes, dépassements en espèces et taux de TVA atypiques.',
         txName: 'Nom de la transaction',
         invNum: 'Numéro de facture',
         beforeTax: 'Montant hors taxe',
@@ -370,6 +391,16 @@
         flaggedCountLbl: 'Opérations Signalées',
         disallowedTotalLbl: 'Exposition Totale au Risque',
         compliantRateLbl: 'Indice de Conformité',
+        filesTitle: 'Sauvegarde & Téléchargement de Fichiers',
+        filesDesc: 'Sauvegarde automatique locale ; téléchargez un fichier CSV ou un rapport TXT, ou importez un fichier JSON.',
+        downloadCsvBtn: 'Télécharger CSV',
+        downloadReportBtn: 'Télécharger Rapport (TXT)',
+        uploadJsonLbl: 'Importer un fichier (JSON)',
+        resetDemoBtn: 'Réinitialiser exemples',
+        aiTitle: 'Assistant IA d’Audit Fiscal',
+        aiDesc: 'Posez une question sur les anomalies, charges non déductibles ou paiements en espèces.',
+        aiPlaceholder: 'Ex. : Pourquoi une opération est signalée ?',
+        aiAskBtn: 'Analyser',
         types: {
           sale: 'Ventes taxables',
           purchase_op: 'Charge opérationnelle déductible',
@@ -390,30 +421,20 @@
           transactions: 'Transactions',
           invoices: 'Factures',
           calculator: 'Calculateur',
-          assistant: 'Assistant',
+          assistant: 'Assistant IA',
+          files: 'Fichiers',
           compliance: 'Conformité',
           reports: 'Rapports',
           regulations: 'Règles',
           deadlines: 'Échéances',
+          history: 'Historique',
           settings: 'Paramètres',
           notifications: 'Alertes',
           currency: 'Devises',
-          history: 'Historique',
           language: 'Langue',
           theme: 'Thème',
           help: 'Aide',
           about: 'À propos'
-        },
-        sectionDetails: {
-          transactions: 'Consultez les opérations enregistrées et leur niveau de risque.',
-          invoices: 'Vérifiez les numéros et la validité des factures fiscales.',
-          calculator: 'Simulez le calcul fiscal et la conformité avant enregistrement.',
-          assistant: 'Assistant d’audit : explique les alertes et actions correctives.',
-          compliance: 'Vérificateur de conformité : distingue opérations conformes et à risque.',
-          reports: 'Synthèse analytique de la conformité et de l’exposition au risque.',
-          regulations: 'Critères de contrôle fiscal appliqués avant déclaration.',
-          deadlines: 'Points de contrôle avant les échéances fiscales.',
-          settings: 'Gérez la langue, la devise et l’affichage de l’application.'
         },
         money: (dzd) => `${symbols[state.currency]}${round2(dzd * rates[state.currency]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
@@ -447,40 +468,136 @@
         atRiskAmount = totalAmount;
         finding = state.lang === 'ar'
           ? 'خطر استبعاد: غياب الفاتورة الرسمية يعرّض العملية لرفض الاعتراف الضريبي. أرفق فاتورة مستوفاة.'
-          : 'Disallowal risk: missing official invoice can invalidate deduction. Attach complete invoice.';
+          : 'Disallowal risk: missing official invoice can invalidate deduction.';
       } else if (item.type === 'personal') {
         risk = 'high';
         atRiskAmount = totalAmount;
         finding = state.lang === 'ar'
           ? 'مخالفة عدم القابلية للخصم: المصاريف الشخصية تُستبعد من الخصم الضريبي. افصلها عن حسابات النشاط.'
-          : 'Non-deductible expense: personal items must be excluded from business deductions.';
+          : 'Non-deductible expense: personal items must be excluded from deductions.';
       } else if (item.payment === 'cash' && totalAmount > CASH_CEILING_DZD) {
         risk = 'high';
         atRiskAmount = totalAmount;
         finding = state.lang === 'ar'
           ? 'تجاوز سقف الدفع النقدي: المبلغ النقدي يفوق العتبة المحددة. يُنصح بالاعتماد على التحويل البنكي.'
-          : 'Cash limit breach: cash payment exceeds threshold. Use bank transfer where required.';
+          : 'Cash limit breach: cash payment exceeds threshold.';
       } else if (item.type === 'export' && rate > 0) {
         risk = 'medium';
         atRiskAmount = taxAmount;
         finding = state.lang === 'ar'
           ? 'تنبيه نسبة التصدير: التصدير غالباً معفى (0%). تحقق من أهلية الإعفاء قبل التصريح.'
-          : 'Export rate warning: exports are commonly 0%. Verify exemption criteria before filing.';
+          : 'Export rate warning: exports are commonly 0%.';
       } else if ((item.type === 'sale' || item.type === 'purchase_op') && rate !== 19 && rate !== 9) {
         risk = 'medium';
         atRiskAmount = taxAmount;
         finding = state.lang === 'ar'
           ? 'نسبة ضريبة غير قياسية: النسبة تختلف عن 19% و9%. راجع التصنيف الجبائي للسلعة أو الخدمة.'
-          : 'Non-standard rate: rate differs from 19% / 9%. Confirm applicable tax schedule.';
+          : 'Non-standard rate: differs from 19% / 9% benchmarks.';
       } else {
         risk = 'low';
         atRiskAmount = 0;
         finding = state.lang === 'ar'
           ? 'متوافق مع قواعد الفحص: البيانات والفاتورة ونوع العملية متسقة.'
-          : 'Audit check passed: transaction type, invoice, and rate are consistent.';
+          : 'Audit check passed: entry is consistent.';
       }
 
       return { beforeTax: round2(beforeTax), rate: round2(rate), taxAmount, totalAmount, atRiskAmount, risk, finding };
+    }
+
+    function triggerDownload(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      logActivity(`تنزيل الملف: ${filename}`);
+      renderPage();
+    }
+
+    function downloadCSV() {
+      const headers = ['ID', 'Name', 'Invoice', 'Type', 'Payment', 'HasInvoice', 'BeforeTax_DZD', 'Rate_Pct', 'Tax_DZD', 'Total_DZD', 'Risk', 'Finding'];
+      const lines = [headers.join(',')];
+      state.records.forEach((r) => {
+        const a = evaluateAudit(r);
+        const row = [
+          r.id,
+          `"${String(r.name).replace(/"/g, '""')}"`,
+          `"${String(r.invoice).replace(/"/g, '""')}"`,
+          r.type,
+          r.payment,
+          r.hasInvoice,
+          a.beforeTax,
+          a.rate,
+          a.taxAmount,
+          a.totalAmount,
+          a.risk,
+          `"${String(a.finding).replace(/"/g, '""')}"`
+        ];
+        lines.push(row.join(','));
+      });
+      triggerDownload('taxguard-audit-report.csv', '\uFEFF' + lines.join('\n'), 'text/csv;charset=utf-8;');
+    }
+
+    function downloadReportTXT() {
+      const sections = state.records.map((r, idx) => {
+        const a = evaluateAudit(r);
+        return `${idx + 1}. ${r.name} | ${r.invoice} | HT: ${a.beforeTax} | Tax (${a.rate}%): ${a.taxAmount} | TTC: ${a.totalAmount} | Risk: ${a.risk} | ${a.finding}`;
+      });
+      const text = `TaxGuard AI — Fiscal Audit Report\nDate: ${new Date().toISOString()}\n\n${sections.join('\n')}`;
+      triggerDownload('taxguard-audit-summary.txt', text, 'text/plain;charset=utf-8;');
+    }
+
+    function handleJsonUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result));
+          if (Array.isArray(imported) && imported.length) {
+            state.records = imported;
+            persistRecords();
+            logActivity(`استعادة ملف: ${file.name}`);
+            renderPage();
+          }
+        } catch (_) {}
+      };
+      reader.readAsText(file);
+    }
+
+    function resetSampleRecords() {
+      state.records = [...defaultRecords];
+      persistRecords();
+      logActivity('استعادة البيانات الافتراضية');
+      renderPage();
+    }
+
+    function runSmartAssistant() {
+      const qInput = document.getElementById('ai-question-input');
+      const q = (qInput?.value || '').trim();
+      state.aiQuestion = q;
+
+      const flagged = state.records.filter((r) => evaluateAudit(r).risk !== 'low');
+      if (!flagged.length) {
+        state.aiReply = state.lang === 'ar'
+          ? 'جميع المعاملات المسجلة حالياً متوافقة مع قواعد الفحص ولا توجد مخالفات ظاهرة.'
+          : 'All current transactions pass the compliance checks with no flagged risks.';
+      } else {
+        const details = flagged.map((r) => {
+          const a = evaluateAudit(r);
+          return `• ${r.name} (${r.invoice}): ${a.finding}`;
+        }).join('\n');
+        state.aiReply = state.lang === 'ar'
+          ? `تم رصد ${flagged.length} معاملة تحتاج إلى معالجة قبل التصريح:\n${details}`
+          : `Detected ${flagged.length} item(s) requiring attention before filing:\n${details}`;
+      }
+
+      if (q) logActivity(`سؤال المساعد الذكي: ${q}`);
+      renderPage();
     }
 
     function toggleMenu(e) {
@@ -563,52 +680,18 @@
         `;
       }).join('');
 
-      const bottomNav = document.getElementById('bottom-nav-10');
-      bottomNav.innerHTML = bottom10Keys.map((key) => {
+      const bottomNav = document.getElementById('bottom-nav-12');
+      bottomNav.innerHTML = bottom12Keys.map((key) => {
         const active = state.page === key;
         return `
-          <button onclick="navigateTo('${key}')" class="min-w-[66px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-[11px] font-bold transition ${
+          <button onclick="navigateTo('${key}')" class="min-w-[64px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-[10px] font-bold transition ${
             active ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }">
             ${icons[key]}
-            <span class="truncate max-w-[64px]">${t().labels[key]}</span>
+            <span class="truncate max-w-[62px]">${t().labels[key]}</span>
           </button>
         `;
       }).join('');
-    }
-
-    function renderHome5AndAuditCard() {
-      return `
-        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
-          <div>
-            <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
-          </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            ${main5Keys.map((key) => {
-              const active = state.page === key;
-              return `
-                <button onclick="navigateTo('${key}')" class="flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center text-xs sm:text-sm font-bold transition ${
-                  active
-                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-md'
-                    : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/70 hover:border-indigo-400'
-                }">
-                  <span class="flex h-10 w-10 items-center justify-center rounded-xl ${active ? 'bg-white/20 text-white' : 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}">
-                    ${icons[key]}
-                  </span>
-                  <span>${t().labels[key]}</span>
-                </button>
-              `;
-            }).join('')}
-          </div>
-
-          <div class="rounded-xl border border-indigo-200/80 dark:border-indigo-800/60 bg-indigo-50/60 dark:bg-indigo-950/30 p-3.5">
-            <p class="text-xs font-extrabold text-indigo-700 dark:text-indigo-300">${t().auditObjectiveTitle}</p>
-            <p class="mt-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300">${t().auditObjectiveDesc}</p>
-          </div>
-        </section>
-      `;
     }
 
     function renderAuditKPIs() {
@@ -648,6 +731,40 @@
       `;
     }
 
+    function renderFilesAndAssistantPanels() {
+      const aiBox = state.aiReply ? `
+        <div class="mt-3 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 p-3.5 text-xs whitespace-pre-line leading-relaxed text-slate-800 dark:text-slate-100">${state.aiReply}</div>
+      ` : '';
+
+      return `
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+            <h3 class="text-base font-extrabold">${t().filesTitle}</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${t().filesDesc}</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" onclick="downloadCSV()" class="rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition">${t().downloadCsvBtn}</button>
+              <button type="button" onclick="downloadReportTXT()" class="rounded-xl border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 transition">${t().downloadReportBtn}</button>
+              <button type="button" onclick="resetSampleRecords()" class="rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">${t().resetDemoBtn}</button>
+            </div>
+            <div class="pt-1">
+              <label class="block text-xs font-bold mb-1">${t().uploadJsonLbl}</label>
+              <input type="file" accept="application/json,.json" onchange="handleJsonUpload(event)" class="block w-full text-xs text-slate-500 file:me-3 file:rounded-xl file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-slate-700 dark:file:text-slate-200" />
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+            <h3 class="text-base font-extrabold">${t().aiTitle}</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${t().aiDesc}</p>
+            <div class="flex gap-2">
+              <input id="ai-question-input" type="text" value="${state.aiQuestion}" placeholder="${t().aiPlaceholder}" class="flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-xs focus:border-indigo-500 focus:outline-none" />
+              <button type="button" onclick="runSmartAssistant()" class="rounded-xl bg-cyan-600 px-4 py-2 text-xs font-extrabold text-white hover:bg-cyan-700 transition">${t().aiAskBtn}</button>
+            </div>
+            ${aiBox}
+          </div>
+        </section>
+      `;
+    }
+
     function readFormValues() {
       const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
       const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
@@ -681,6 +798,7 @@
         payment: entry.payment,
         hasInvoice: entry.hasInvoice
       });
+      persistRecords();
       state.lastAudit = entry;
       logActivity(`${t().saveBtn}: ${entry.name} (${entry.invoice})`);
       renderPage();
@@ -688,6 +806,7 @@
 
     function deleteRecord(id) {
       state.records = state.records.filter((r) => r.id !== id);
+      persistRecords();
       renderPage();
     }
 
@@ -822,25 +941,11 @@
       `;
     }
 
-    function renderActiveSectionBanner() {
-      const detailText = t().sectionDetails?.[state.page];
-      if (!detailText) return '';
-      return `
-        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">${t().labels[state.page] || state.page}</h3>
-          </div>
-          <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">${detailText}</p>
-        </section>
-      `;
-    }
-
     function renderPage() {
       const container = document.getElementById('page-container');
       container.innerHTML =
-        renderHome5AndAuditCard() +
         renderAuditKPIs() +
-        renderActiveSectionBanner() +
+        renderFilesAndAssistantPanels() +
         renderFormAndAuditTable();
     }
 
