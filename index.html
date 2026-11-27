@@ -1,3 +1,20 @@
+I will generate the updated TaxGuard AI index.html with a 10-icon bottom navigation dock, accurate precision tax calculations, no authentication barriers, an animated splash screen, the three-dot menu (⋮), full Arabic/French/English support, currency switching, and dark/light modes.
+index.html [generated with web_code_canvas tool]
+تم تصميم التحديث الجديد لملف index.html بحيث يلبي طلبكِ بدقة:
+ * شريط سفلي يضم 10 أيقونات واضحة ومتجاوبة:
+   * لوحة القيادة (Dashboard)
+   * المعاملات (Transactions)
+   * الفواتير (Invoices)
+   * حاسبة الضرائب (Tax Calculator)
+   * المساعد الذكي (AI Assistant)
+   * مراقبة الامتثال (Compliance)
+   * التقارير والتحليلات (Reports)
+   * اللوائح الضريبية (Regulations)
+   * التقويم الضريبي (Deadlines)
+   * الإعدادات (Settings)
+     (على الهواتف يمكنكِ التمرير أفقياً بسلاسة في الشريط السفلي للوصول إلى جميع الأيقونات الـ 10، مع وجود قائمة النقاط الثلاث ⋮ في الأعلى للوصول السريع وتغيير اللغة والعملة والوضع الليلي).
+ * حساب ضريبي دقيق وموثوق:
+   * تم ضبط الحسابات العشرية بدقة لتجنب أخطاء الفاصلة العائمة، مع توضيح المبلغ قبل الضريبة (HT)، قيمة الضريبة (TVA/Tax)، والمجموع شامل الضريبة (TTC) فور الضغط على Calculate، ثم حفظها وعرضها في الجدول عند الضغط على Save Transaction.
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -36,6 +53,8 @@
     }
     .shield-anim { animation: pulseShield 1.8s infinite ease-in-out; }
     .progress-anim { animation: loadBar 2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
@@ -55,11 +74,11 @@
   </div>
 
   <!-- Main App -->
-  <div id="app-root" class="hidden min-h-screen flex flex-col pb-20 md:pb-8">
+  <div id="app-root" class="hidden min-h-screen flex flex-col pb-24">
 
     <!-- Top Header -->
-    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
+    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <button onclick="navigateTo('dashboard')" class="flex items-center gap-3 text-start">
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -72,30 +91,48 @@
           </div>
         </button>
 
-        <!-- Three-Dot Menu Button (⋮) -->
-        <div class="relative">
-          <button id="menu-btn" onclick="toggleMenu(event)" aria-label="Menu" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <circle cx="12" cy="5" r="2" />
-              <circle cx="12" cy="12" r="2" />
-              <circle cx="12" cy="19" r="2" />
-            </svg>
+        <!-- Quick Language, Currency, Theme & Three-Dot Menu -->
+        <div class="flex items-center gap-2">
+          <select id="lang-switcher" onchange="setLanguage(this.value)" class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 py-2 text-xs font-bold focus:outline-none">
+            <option value="ar">العربية</option>
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+          </select>
+
+          <select id="curr-switcher" onchange="setCurrency(this.value)" class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 py-2 text-xs font-bold focus:outline-none">
+            <option value="DZD">DZD</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="SAR">SAR</option>
+          </select>
+
+          <button onclick="toggleTheme()" aria-label="Theme" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
           </button>
 
-          <!-- Dropdown / Drawer Menu -->
-          <div id="more-menu" class="invisible opacity-0 scale-95 pointer-events-none fixed md:absolute inset-x-4 md:inset-x-auto top-16 md:top-12 end-auto md:end-0 z-50 w-auto md:w-72 max-h-[80vh] overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-2xl transition-all duration-200 origin-top-end">
-            <div id="menu-items-container" class="space-y-1"></div>
+          <div class="relative">
+            <button id="menu-btn" onclick="toggleMenu(event)" aria-label="Menu" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+
+            <div id="more-menu" class="invisible opacity-0 scale-95 pointer-events-none fixed md:absolute inset-x-4 md:inset-x-auto top-16 md:top-11 end-auto md:end-0 z-50 w-auto md:w-72 max-h-[78vh] overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-2xl transition-all duration-200 origin-top-end">
+              <div id="menu-items-container" class="space-y-1"></div>
+            </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Page Content -->
-    <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 space-y-6"></main>
+    <!-- Main Page Content -->
+    <main id="page-container" class="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 space-y-5"></main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 inset-x-0 z-30 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
-      <div id="bottom-nav" class="mx-auto flex max-w-6xl items-center justify-around px-2 py-2"></div>
+    <!-- 10-Icon Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+      <div id="bottom-nav-10" class="mx-auto flex max-w-6xl items-center justify-between gap-1 overflow-x-auto no-scrollbar px-2 py-2"></div>
     </nav>
   </div>
 
@@ -120,7 +157,7 @@
         },
         {
           id: 2,
-          name: 'فاتورة استشارات محاسبية',
+          name: 'فاتورة خدمات استشارية',
           invoice: 'INV-2026-002',
           beforeTax: 25000,
           rate: 19,
@@ -131,13 +168,26 @@
       ],
       activities: [
         'فحص المعاملات مقابل القواعد الضريبية',
-        'تحديث عرض لوحة القيادة',
-        'تهيئة العملة واللغة'
+        'تحديث لوحة المراقبة والحسابات',
+        'تهيئة اللغة والعملة'
       ]
     };
 
     const rates = { DZD: 1, USD: 1 / 134.5, EUR: 0.92 / 134.5, SAR: 3.75 / 134.5 };
     const symbols = { DZD: 'د.ج ', USD: '$', EUR: '€', SAR: 'ر.س ' };
+
+    // Precise math helper to eliminate floating-point rounding bugs
+    function round2(num) {
+      return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
+    }
+
+    function computeTax(beforeTax, rate) {
+      const base = Math.max(0, Number(beforeTax) || 0);
+      const pct = Math.max(0, Number(rate) || 0);
+      const taxAmount = round2((base * pct) / 100);
+      const totalAmount = round2(base + taxAmount);
+      return { beforeTax: round2(base), rate: round2(pct), taxAmount, totalAmount };
+    }
 
     const icons = {
       dashboard: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
@@ -145,25 +195,42 @@
       invoices: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
       calculator: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>',
       assistant: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
-      compliance: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      regulations: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
-      deadlines: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
-      reports: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+      compliance: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      reports: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+      regulations: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
+      deadlines: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+      settings: '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
       notifications: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>',
       currency: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       history: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       language: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>',
       theme: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>',
-      settings: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
       help: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       about: '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
     };
 
+    const bottom10Keys = [
+      'dashboard',
+      'transactions',
+      'invoices',
+      'calculator',
+      'assistant',
+      'compliance',
+      'reports',
+      'regulations',
+      'deadlines',
+      'settings'
+    ];
+
+    const menuExtraKeys = [
+      'compliance', 'regulations', 'deadlines', 'reports',
+      'notifications', 'currency', 'history', 'language',
+      'theme', 'settings', 'help', 'about'
+    ];
+
     const dict = {
       ar: {
         dir: 'rtl',
-        homeTitle: 'الصفحة الرئيسية',
-        homeSub: 'وصول مباشر إلى الخدمات الخمس الأساسية بدون تسجيل دخول.',
         txName: 'اسم المعاملة',
         invNum: 'رقم الفاتورة',
         beforeTax: 'المبلغ قبل الضريبة',
@@ -175,39 +242,41 @@
         taxVal: 'قيمة الضريبة',
         totalVal: 'المجموع بعد الضريبة',
         complianceStatus: 'الامتثال الضريبي',
+        totalBeforeSummary: 'إجمالي المبالغ قبل الضريبة',
+        totalTaxSummary: 'إجمالي الضرائب المحسوبة',
+        totalAfterSummary: 'الإجمالي العام شامل الضريبة',
         types: {
           operational: 'نفقات تشغيلية (Operational)',
           sales: 'مبيعات خاضعة للضريبة (Sales)',
           export: 'تصدير معفى (Export)',
           personal: 'مصروف شخصي (Personal)'
         },
-        main5: {
-          dashboard: 'لوحة القيادة',
+        labels: {
+          dashboard: 'الرئيسية',
           transactions: 'المعاملات',
           invoices: 'الفواتير',
-          calculator: 'حاسبة الضرائب',
-          assistant: 'المساعد الذكي'
-        },
-        extra12: {
-          compliance: 'فاحص الامتثال الضريبي',
-          regulations: 'اللوائح الضريبية',
-          deadlines: 'تقويم المواعيد الضريبية',
-          reports: 'التقارير والتحليلات',
+          calculator: 'الحاسبة',
+          assistant: 'المساعد',
+          compliance: 'الامتثال',
+          reports: 'التقارير',
+          regulations: 'اللوائح',
+          deadlines: 'المواعيد',
+          settings: 'الإعدادات',
           notifications: 'الإشعارات',
-          currency: 'إدارة العملات',
-          history: 'سجل النشاطات',
-          language: 'اختيار اللغة',
-          theme: 'الوضع الليلي / النهاري',
-          settings: 'إعدادات التطبيق',
-          help: 'مركز المساعدة',
-          about: 'حول TaxGuard AI'
+          currency: 'العملات',
+          history: 'السجل',
+          language: 'اللغة',
+          theme: 'المظهر',
+          help: 'المساعدة',
+          about: 'حول التطبيق'
         },
-        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+        money: (dzd) => {
+          const converted = round2(dzd * rates[state.currency]);
+          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
       },
       en: {
         dir: 'ltr',
-        homeTitle: 'Main Homepage',
-        homeSub: 'Direct access to the 5 core services with no login required.',
         txName: 'Transaction Name',
         invNum: 'Invoice Number',
         beforeTax: 'Amount Before Tax',
@@ -219,39 +288,41 @@
         taxVal: 'Tax Amount',
         totalVal: 'Total After Tax',
         complianceStatus: 'Tax Compliance',
+        totalBeforeSummary: 'Total Before Tax',
+        totalTaxSummary: 'Total Calculated Tax',
+        totalAfterSummary: 'Grand Total (Incl. Tax)',
         types: {
           operational: 'Operational Expense',
           sales: 'Taxable Sales',
           export: 'Exempt Export',
           personal: 'Personal Expense'
         },
-        main5: {
+        labels: {
           dashboard: 'Dashboard',
           transactions: 'Transactions',
           invoices: 'Invoices',
-          calculator: 'Tax Calculator',
-          assistant: 'AI Smart Assistant'
-        },
-        extra12: {
-          compliance: 'Tax Compliance Checker',
-          regulations: 'Tax Regulations',
-          deadlines: 'Tax Deadlines Calendar',
-          reports: 'Reports and Analytics',
+          calculator: 'Calculator',
+          assistant: 'Assistant',
+          compliance: 'Compliance',
+          reports: 'Reports',
+          regulations: 'Regulations',
+          deadlines: 'Deadlines',
+          settings: 'Settings',
           notifications: 'Notifications',
-          currency: 'Currency Management',
-          history: 'Activity History',
-          language: 'Language Selection',
-          theme: 'Dark Mode / Light Mode',
-          settings: 'Application Settings',
-          help: 'Help Center',
-          about: 'About TaxGuard AI'
+          currency: 'Currency',
+          history: 'History',
+          language: 'Language',
+          theme: 'Theme',
+          help: 'Help',
+          about: 'About'
         },
-        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+        money: (dzd) => {
+          const converted = round2(dzd * rates[state.currency]);
+          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
       },
       fr: {
         dir: 'ltr',
-        homeTitle: 'Accueil Principale',
-        homeSub: 'Accès direct aux 5 services principaux sans authentification.',
         txName: 'Nom de la transaction',
         invNum: 'Numéro de facture',
         beforeTax: 'Montant hors taxe',
@@ -263,42 +334,40 @@
         taxVal: 'Montant de la taxe',
         totalVal: 'Total TTC',
         complianceStatus: 'Conformité fiscale',
+        totalBeforeSummary: 'Total Hors Taxe',
+        totalTaxSummary: 'Total Taxes Calculées',
+        totalAfterSummary: 'Total Général TTC',
         types: {
           operational: 'Charge opérationnelle',
           sales: 'Ventes taxables',
           export: 'Exportation exonérée',
           personal: 'Dépense personnelle'
         },
-        main5: {
-          dashboard: 'Tableau de bord',
+        labels: {
+          dashboard: 'Accueil',
           transactions: 'Transactions',
           invoices: 'Factures',
-          calculator: 'Calculateur fiscal',
-          assistant: 'Assistant IA intelligent'
+          calculator: 'Calculateur',
+          assistant: 'Assistant',
+          compliance: 'Conformité',
+          reports: 'Rapports',
+          regulations: 'Règles',
+          deadlines: 'Échéances',
+          settings: 'Paramètres',
+          notifications: 'Alertes',
+          currency: 'Devises',
+          history: 'Historique',
+          language: 'Langue',
+          theme: 'Thème',
+          help: 'Aide',
+          about: 'À propos'
         },
-        extra12: {
-          compliance: 'Vérificateur conformité fiscale',
-          regulations: 'Réglementations fiscales',
-          deadlines: 'Calendrier des échéances',
-          reports: 'Rapports et analyses',
-          notifications: 'Notifications',
-          currency: 'Gestion des devises',
-          history: 'Historique des activités',
-          language: 'Choix de la langue',
-          theme: 'Mode sombre / clair',
-          settings: 'Paramètres application',
-          help: "Centre d'aide",
-          about: 'À propos de TaxGuard AI'
-        },
-        money: (dzd) => `${symbols[state.currency]}${(dzd * rates[state.currency]).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+        money: (dzd) => {
+          const converted = round2(dzd * rates[state.currency]);
+          return `${symbols[state.currency]}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
       }
     };
-
-    const extraKeys = [
-      'compliance', 'regulations', 'deadlines', 'reports',
-      'notifications', 'currency', 'history', 'language',
-      'theme', 'settings', 'help', 'about'
-    ];
 
     function t() {
       return dict[state.lang];
@@ -352,7 +421,7 @@
     function navigateTo(pageKey) {
       state.page = pageKey;
       closeMenu();
-      logActivity(t().main5[pageKey] || t().extra12[pageKey] || pageKey);
+      logActivity(t().labels[pageKey] || pageKey);
       renderChrome();
       renderPage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -362,12 +431,14 @@
       state.lang = lang;
       document.documentElement.lang = lang;
       document.documentElement.dir = t().dir;
+      document.getElementById('lang-switcher').value = lang;
       renderChrome();
       renderPage();
     }
 
     function setCurrency(curr) {
       state.currency = curr;
+      document.getElementById('curr-switcher').value = curr;
       renderPage();
     }
 
@@ -378,11 +449,11 @@
     }
 
     function renderChrome() {
-      const currentLabel = t().main5[state.page] || t().extra12[state.page] || t().homeTitle;
-      document.getElementById('header-page-title').textContent = currentLabel;
+      document.getElementById('header-page-title').textContent = t().labels[state.page] || state.page;
 
+      // Top three-dot menu
       const menuContainer = document.getElementById('menu-items-container');
-      menuContainer.innerHTML = extraKeys.map((key) => {
+      menuContainer.innerHTML = menuExtraKeys.map((key) => {
         const active = state.page === key;
         return `
           <button onclick="navigateTo('${key}')" class="w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-start text-sm font-semibold transition ${
@@ -392,52 +463,48 @@
           }">
             <span class="flex items-center gap-2.5">
               ${icons[key]}
-              <span>${t().extra12[key]}</span>
+              <span>${t().labels[key]}</span>
             </span>
             <span class="text-xs opacity-60">›</span>
           </button>
         `;
       }).join('');
 
-      const bottomNav = document.getElementById('bottom-nav');
-      const mainKeys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
-      bottomNav.innerHTML = mainKeys.map((key) => {
+      // 10-icon bottom dock
+      const bottomNav = document.getElementById('bottom-nav-10');
+      bottomNav.innerHTML = bottom10Keys.map((key) => {
         const active = state.page === key;
         return `
-          <button onclick="navigateTo('${key}')" class="flex flex-col items-center gap-1 rounded-xl px-2 py-1 text-[11px] font-bold transition ${
-            active ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+          <button onclick="navigateTo('${key}')" class="min-w-[66px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-[11px] font-bold transition ${
+            active
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }">
             ${icons[key]}
-            <span class="truncate max-w-[76px]">${t().main5[key]}</span>
+            <span class="truncate max-w-[64px]">${t().labels[key]}</span>
           </button>
         `;
       }).join('');
     }
 
-    function renderHomeCoreButtons() {
-      const mainKeys = ['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'];
+    function renderSummaryCards() {
+      const sumBefore = round2(state.transactions.reduce((acc, x) => acc + x.beforeTax, 0));
+      const sumTax = round2(state.transactions.reduce((acc, x) => acc + x.taxAmount, 0));
+      const sumAfter = round2(state.transactions.reduce((acc, x) => acc + x.totalAmount, 0));
+
       return `
-        <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
-          <div class="mb-4">
-            <h2 class="text-lg font-extrabold">${t().homeTitle}</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">${t().homeSub}</p>
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">${t().totalBeforeSummary}</p>
+            <p class="mt-1.5 font-mono text-xl font-extrabold">${t().money(sumBefore)}</p>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            ${mainKeys.map((key) => {
-              const isCurrent = state.page === key;
-              return `
-                <button onclick="navigateTo('${key}')" class="flex flex-col items-center justify-center gap-2 rounded-2xl border p-4 text-center font-bold text-sm transition ${
-                  isCurrent
-                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-md'
-                    : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 hover:border-indigo-400'
-                }">
-                  <span class="flex h-11 w-11 items-center justify-center rounded-xl ${isCurrent ? 'bg-white/20 text-white' : 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}">
-                    ${icons[key]}
-                  </span>
-                  <span>${t().main5[key]}</span>
-                </button>
-              `;
-            }).join('')}
+          <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${t().totalTaxSummary}</p>
+            <p class="mt-1.5 font-mono text-xl font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(sumTax)}</p>
+          </div>
+          <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">${t().totalAfterSummary}</p>
+            <p class="mt-1.5 font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400">${t().money(sumAfter)}</p>
           </div>
         </section>
       `;
@@ -445,9 +512,13 @@
 
     function renderTransactionFormAndTable() {
       const previewHtml = state.previewCalc ? `
-        <div class="mt-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 p-4 flex flex-wrap items-center justify-between gap-4 text-sm">
+        <div class="mt-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
           <div>
-            <span class="text-xs text-slate-500 dark:text-slate-400">${t().taxVal}:</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400">${t().beforeTax}:</span>
+            <p class="font-mono font-bold">${t().money(state.previewCalc.beforeTax)}</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-500 dark:text-slate-400">${t().taxVal} (${state.previewCalc.rate}%):</span>
             <p class="font-mono font-extrabold text-indigo-600 dark:text-indigo-400">${t().money(state.previewCalc.taxAmount)}</p>
           </div>
           <div>
@@ -504,11 +575,11 @@
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().beforeTax}</label>
-              <input id="f-before-tax" type="number" step="0.01" required placeholder="10000" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-before-tax" type="number" step="0.01" min="0" required placeholder="10000" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold mb-1">${t().taxRate}</label>
-              <input id="f-tax-rate" type="number" step="0.1" required placeholder="19" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+              <input id="f-tax-rate" type="number" step="0.01" min="0" required placeholder="19" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
             </div>
             <div class="flex items-end gap-2.5">
               <button type="button" onclick="handleCalculate()" class="flex-1 rounded-xl border border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2 text-sm font-extrabold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition">
@@ -550,12 +621,20 @@
       const name = (document.getElementById('f-name')?.value || '').trim() || 'معاملة جديدة';
       const invoice = (document.getElementById('f-invoice')?.value || '').trim() || `INV-${Date.now().toString().slice(-4)}`;
       const type = document.getElementById('f-type')?.value || 'operational';
-      const beforeTax = parseFloat(document.getElementById('f-before-tax')?.value) || 0;
-      const rate = parseFloat(document.getElementById('f-tax-rate')?.value) || 0;
-      const taxAmount = +(beforeTax * (rate / 100)).toFixed(2);
-      const totalAmount = +(beforeTax + taxAmount).toFixed(2);
-      const comp = evaluateCompliance(type, rate);
-      return { name, invoice, type, beforeTax, rate, taxAmount, totalAmount, comp };
+      const rawBefore = document.getElementById('f-before-tax')?.value;
+      const rawRate = document.getElementById('f-tax-rate')?.value;
+      const calc = computeTax(rawBefore, rawRate);
+      const comp = evaluateCompliance(type, calc.rate);
+      return {
+        name,
+        invoice,
+        type,
+        beforeTax: calc.beforeTax,
+        rate: calc.rate,
+        taxAmount: calc.taxAmount,
+        totalAmount: calc.totalAmount,
+        comp
+      };
     }
 
     function handleCalculate() {
@@ -590,57 +669,41 @@
 
     function renderPage() {
       const container = document.getElementById('page-container');
-      const coreBlock = renderHomeCoreButtons();
-      let extraBlock = '';
+      let contextBanner = '';
 
-      if (state.page === 'language') {
-        extraBlock = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
-            <h3 class="text-base font-bold">${t().extra12.language}</h3>
-            <div class="flex flex-wrap gap-2">
-              <button onclick="setLanguage('ar')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'ar' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">العربية</button>
-              <button onclick="setLanguage('en')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'en' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">English</button>
-              <button onclick="setLanguage('fr')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.lang === 'fr' ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">Français</button>
-            </div>
-          </section>
-        `;
-      } else if (state.page === 'currency') {
-        extraBlock = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
-            <h3 class="text-base font-bold">${t().extra12.currency}</h3>
-            <div class="flex flex-wrap gap-2">
-              ${Object.keys(rates).map(c => `
-                <button onclick="setCurrency('${c}')" class="rounded-xl px-4 py-2 text-sm font-bold ${state.currency === c ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}">${c}</button>
-              `).join('')}
-            </div>
-          </section>
-        `;
-      } else if (state.page === 'theme') {
-        extraBlock = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex items-center justify-between">
-            <h3 class="text-base font-bold">${t().extra12.theme}</h3>
-            <button onclick="toggleTheme()" class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white">${state.dark ? 'Light' : 'Dark'}</button>
-          </section>
-        `;
-      } else if (state.page === 'history') {
-        extraBlock = `
+      if (state.page === 'history') {
+        contextBanner = `
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2">
-            <h3 class="text-base font-bold">${t().extra12.history}</h3>
+            <h3 class="text-base font-bold">${t().labels.history}</h3>
             <ul class="list-disc ps-5 space-y-1 text-sm text-slate-600 dark:text-slate-300">
               ${state.activities.map(act => `<li>${act}</li>`).join('')}
             </ul>
           </section>
         `;
-      } else if (!['dashboard', 'transactions', 'invoices', 'calculator', 'assistant'].includes(state.page)) {
-        extraBlock = `
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2">
-            <h3 class="text-base font-bold">${t().extra12[state.page] || state.page}</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-300">TaxGuard AI — Tax Compliance Monitoring</p>
+      } else if (state.page === 'regulations') {
+        contextBanner = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
+            <h3 class="text-base font-bold">${t().labels.regulations}</h3>
+            <p class="text-slate-600 dark:text-slate-300">TVA القياسية: 19% | المخفضة: 9% | التصدير المعفى: 0% | المصاريف الشخصية: غير قابلة للخصم.</p>
+          </section>
+        `;
+      } else if (state.page === 'deadlines') {
+        contextBanner = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
+            <h3 class="text-base font-bold">${t().labels.deadlines}</h3>
+            <p class="text-slate-600 dark:text-slate-300">تصريح G50 الشهري: قبل اليوم 20 من كل شهر.</p>
+          </section>
+        `;
+      } else if (state.page === 'assistant') {
+        contextBanner = `
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2 text-sm">
+            <h3 class="text-base font-bold">${t().labels.assistant}</h3>
+            <p class="text-slate-600 dark:text-slate-300">يقوم النظام بفحص كل معاملة تلقائياً للتحقق من مطابقة نسبة الضريبة ونوع المعاملة للقواعد الضريبية.</p>
           </section>
         `;
       }
 
-      container.innerHTML = coreBlock + extraBlock + renderTransactionFormAndTable();
+      container.innerHTML = renderSummaryCards() + contextBanner + renderTransactionFormAndTable();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -659,3 +722,4 @@
   </script>
 </body>
 </html>
+
